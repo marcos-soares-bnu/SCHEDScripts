@@ -1,0 +1,12 @@
+echo off
+:loop
+cls
+color 0f
+SET ERROR=FALSE
+SET DPWARN=FALSE
+SET OK=TRUE
+
+set "CHECKNAME=%~nx0"
+REM powershell.exe -Command "& {.\check_OTASS_NO_LASTID_UPDATE.ps1}"
+powershell.exe -file "D:\IAS_Monitoring\APP_Dev\SCHEDScripts\check_OTASS_NO_LASTID_UPDATE.ps1" "%USER%" "%PASS%"
+pause

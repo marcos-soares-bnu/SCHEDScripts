@@ -1,0 +1,30 @@
+. /ixos/system/OTASS_971/bin/profile 
+# --- SQL JOB WITH ERROR --- 
+sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp << EOF 
+SET SERVEROUTPUT ON 
+SET FEEDBACK OFF 
+BEGIN 
+   -- Open the cursor and loop through the records 
+   FOR v_rec IN ( 
+		 SELECT   JOBNAME 
+			, ID 
+			, STAT 
+			, CAST (   from_tz (to_timestamp ('19700101000000', 'YYYYMMDDHH24MISS') 
+				 + numtodsinterval(TIME ,'second'),'UTC') at time zone 'CET' as timestamp 
+			       ) TIME_CET 
+			, MESSAGE 
+		   FROM ECR.ADM_JOB_PROTOCOL 
+		  WHERE stat <> 'INFO' AND ID >= 1181332
+		  ORDER BY ID 
+		) LOOP 
+   -- Print the values 
+   dbms_output.put_line('JOBNAME: ' || v_rec.JOBNAME); 
+   dbms_output.put_line('ID     : ' || v_rec.ID); 
+   dbms_output.put_line('STATUS : ' || v_rec.STAT); 
+   dbms_output.put_line('TIME   : ' || v_rec.TIME_CET); 
+   dbms_output.put_line('MESSAGE: ' || v_rec.MESSAGE); 
+   END LOOP; 
+END; 
+/ 
+EXIT 
+EOF 

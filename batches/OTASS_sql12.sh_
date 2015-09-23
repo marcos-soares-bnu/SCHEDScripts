@@ -1,0 +1,35 @@
+. /ixos/system/OTASS_971/bin/profile 
+# --- SQL JOB WITH ERROR --- 
+sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp << EOF 
+SET SERVEROUTPUT ON 
+SET FEEDBACK OFF 
+BEGIN 
+   -- Open the cursor and loop through the records 
+   FOR v_rec IN ( 
+		SELECT 	  poolname
+			, pending_MB
+			, writemin_MB 
+		  FROM (SELECT    poolname
+				, round((sum(sectors)/512)) as pending_MB
+				, max(WRITEMIN) as writemin_MB 
+			  FROM 	  ecr.ds_job
+				, ecr.ADM_POOL_INFO 
+			 WHERE 	  jobno in (SELECT   max(jobno) 
+					      FROM   ecr.ds_job 
+					     WHERE   poolname <> '.done.' 
+					       AND   flags = 0 
+					  GROUP BY   poolname
+						   , docidno
+						   , compsname) 
+			   AND    poolname = DSPOOLNAME 
+		      GROUP BY    poolname) 
+		  WHERE (pending_MB/writemin_MB) > 2.5 -- 2.5 
+		    AND writemin_MB > 0
+		) LOOP 
+   -- Print the values 
+   dbms_output.put_line('(' || v_rec.poolname || ')(' || v_rec.pending_MB || ')(' || v_rec.writemin_MB || ') >> ' || ROUND(((v_rec.pending_MB/v_rec.writemin_MB)*100),2) || ' % data pending' ); 
+   END LOOP; 
+END; 
+/ 
+EXIT 
+EOF 

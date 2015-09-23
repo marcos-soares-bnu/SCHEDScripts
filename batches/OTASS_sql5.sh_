@@ -1,0 +1,20 @@
+. /ixos/system/OTASS_971/bin/profile 
+# --- SQL JOB WITH ERROR --- 
+sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp << EOF 
+SET SERVEROUTPUT ON 
+SET FEEDBACK OFF 
+BEGIN 
+   -- Open the cursor and loop through the records 
+   FOR v_rec IN ( 
+		   SELECT JOBNAME
+		     FROM ECR.ADM_JOBS 
+		    WHERE MOD(FLAGS,2) = 1 -- 1
+		 ORDER BY JOBNAME
+		) LOOP 
+   -- Print the values 
+   dbms_output.put_line(v_rec.JOBNAME); 
+   END LOOP; 
+END; 
+/ 
+EXIT 
+EOF 

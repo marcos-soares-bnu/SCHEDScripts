@@ -1,0 +1,8 @@
+set heading off
+set pages 0
+set feedback off
+set echo off
+spool disabled_jobs.tmp
+select JOBNAME from ecr.ADM_JOBS where MOD(FLAGS,2)=1 order by JOBNAME;
+spool off
+exit

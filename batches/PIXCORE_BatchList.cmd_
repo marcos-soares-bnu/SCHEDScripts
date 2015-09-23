@@ -1,0 +1,2 @@
+@echo off
+cmd /c D:\IAS_Monitoring\APP_Dev\SCHEDScripts\psexec \\MLGMUC00APP571 sqlcmd -U fisadmin -P FIS!admin -S mlgmuc00csql011\sql2 -Q "SELECT * FROM [FISPixCoreINTERN].[dbo].[BatchList] WHERE Priority = 0"

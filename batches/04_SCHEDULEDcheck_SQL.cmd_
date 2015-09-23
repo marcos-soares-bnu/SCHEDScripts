@@ -1,0 +1,23 @@
+ECHO off
+REM clear the screen
+cls
+REM reset the logfile
+break > sched_sql.log
+
+SET OK=TRUE
+ECHO SQL001
+ECHO ----------------------CHECKS------------------------------ >> sched_sql.log
+ECHO SQL001 >> sched_sql.log
+ECHO ----------------------ERRORS------------------------------ >> sched_sql.log
+powershell.exe -Command "& {.\check_SQL.ps1}" | findstr /v "ONLINE"
+IF %ERRORLEVEL% EQU 0 (
+	powershell.exe -Command "& {.\check_SQL.ps1}" | findstr /v "ONLINE" >> sched_sql.log
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+
+exit

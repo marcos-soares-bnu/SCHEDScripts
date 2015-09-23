@@ -1,0 +1,9 @@
+set pages 1000
+set feedback off
+set echo off
+spool PENDING_DATA_TO_WRITE.tmp
+select poolname, pending_MB, writemin_MB 
+  from (select poolname, round((sum(sectors)/512)) as pending_MB, max(WRITEMIN) as writemin_MB from ecr.ds_job, ecr.ADM_POOL_INFO where jobno in (select max(jobno) from ecr.ds_job where poolname <> '.done.' and flags = 0 group by poolname, docidno,compsname) and poolname = DSPOOLNAME group by poolname) where (pending_MB/writemin_MB) > 2.5 and writemin_MB > 0;
+
+spool off
+exit

@@ -1,0 +1,689 @@
+ECHO off
+REM clear the screen
+cls
+REM reset the logfile
+break > sched_infra.log
+
+REM =========================================================================================================
+ECHO MON001
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON001 >> sched_infra.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+
+REM Errors Handling
+SET OK=TRUE
+sc \\MLGMUC00APP289 query "spawner" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP289 query "spawner" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP289 query "Tomcat5" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP289 query "Tomcat5" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP289 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP289 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON002
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON002 >> sched_infra.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+
+REM Errors Handling
+SET OK=TRUE
+sc \\MLGMUC00APP290 query "spawner" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP290 query "spawner" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP290 query "Tomcat5" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP290 query "Tomcat5" > sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP290 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP290 query "Schedule" > sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON003
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON003 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00SAP019 query "DOKuStar Load Manager 3.6" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP019 query "DOKuStar Load Manager 3.6" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP019 query "DOKuStar Tracing" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP019 query "DOKuStar Tracing" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP019 query "DOKuStarHotSpot30" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP019 query "DOKuStarHotSpot30" >> sched_infra.log
+	
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP019 query "Invoice Capture Center SLD Data Supplier 7.0" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP019 query "Invoice Capture Center SLD Data Supplier 7.0" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP019 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP019 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON004
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON004 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00SAP041 query "DOKuStar Load Manager 3.6" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP041 query "DOKuStar Load Manager 3.6" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP041 query "DOKuStar Tracing" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP041 query "DOKuStar Tracing" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP041 query "DOKuStarHotSpot30" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP041 query "DOKuStarHotSpot30" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP041 query "Invoice Capture Center SLD Data Supplier 7.0" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP041 query "Invoice Capture Center SLD Data Supplier 7.0" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00SAP041 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00SAP041 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON005
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON005 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Deleter" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Deleter" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Exporter" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Exporter" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Importer" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Importer" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Reco" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "FISMSDeliveryNote-Reco" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP571 query "ftpsvc" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "ftpsvc" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP571 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP571 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON007
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON007 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00APP577 query "InputAccel" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "InputAccel" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_AMR_1" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_AMR_1" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_AMR_2" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_AMR_2" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_EXF" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_EXF" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_FZY" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_FZY" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_HDR_1" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_HDR_1" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_HDR_2" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_HDR_2" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_IMF" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_IMF" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_MULTI" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_MULTI" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_PGR_1" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_PGR_1" 
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_PGR_2" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_PGR_2" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_PJV" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_PJV" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_PSR_1" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_PSR_1" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_PSR_2" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_PSR_2" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_SPR_1" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_SPR_1" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "IX_SPR_2" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "IX_SPR_2" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP577 query "ftpsvc" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP577 query "ftpsvc" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON008
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON008 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\mlgmuc00app667 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\mlgmuc00app667 query "Adlib FMR" 
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+ )
+sc \\mlgmuc00app667 query "Exponent Connector Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "Exponent Connector Service" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "Exponent Manager Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "Exponent Manager Service" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "Adlib Process Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "Adlib Process Manager" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "Tomcat6" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "Tomcat6" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "IISADMIN" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "IISADMIN" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "MSMQ" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "MSMQ" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app667 query "W3SVC" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app667 query "W3SVC" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON009
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON009 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\mlgmuc00app664 query "Exponent Connector Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app664 query "Exponent Connector Service" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app664 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app664 query "Adlib FMR" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app664 query "Adlib Process Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app664 query "Adlib Process Manager" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app664 query "MSMQ" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app664 query "MSMQ" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON010
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON010 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\mlgmuc00app705 query "Exponent Connector Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\mlgmuc00app705 query "Exponent Connector Service" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app705 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\mlgmuc00app705 query "Adlib FMR" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app705 query "Adlib Process Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app705 query "Adlib Process Manager" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app705 query "MSMQ" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\mlgmuc00app705 query "MSMQ" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON011
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON011 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00APP706 query "Exponent Connector Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\MLGMUC00APP706 query "Exponent Connector Service" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP706 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\MLGMUC00APP706 query "Adlib FMR" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP706 query "Adlib Process Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\MLGMUC00APP706 query "Adlib Process Manager" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP706 query "MSMQ" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\MLGMUC00APP706 query "MSMQ" >> sched_infra.log
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON012
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON012 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+spawncmd -h iasp.edc.linde.grp status | findstr /V /C:"chkw            T   0 " | findstr /V /C:"db              T   0 " | findstr /V /C:"dsstockist      T   0 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T " 
+IF %ERRORLEVEL% EQU 0 (
+	ECHO SPAWNER ERROR >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON013
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON013 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+spawncmd -h MLGMUC00APP289 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T "
+IF %ERRORLEVEL% EQU 0 (
+	ECHO SPAWNER ERROR >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON014
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON014 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+spawncmd -h MLGMUC00APP290 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T "
+IF %ERRORLEVEL% EQU 0 (
+	ECHO SPAWNER ERROR >> sched_infra.log
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+REM Due to virus scanner problems on DPWIN servers:
+REM Reprocess all documents in error queue shortly before checking the document pipeline server.
+psexec \\MLGMUC00APP289 spawncmd start stockist >NUL 2>&1 
+psexec \\MLGMUC00APP290 spawncmd start stockist >NUL 2>&1
+REM =========================================================================================================
+ECHO MON015
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+REM Print check item name
+ECHO MON015 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+ping 10.138.228.248 | findstr Packets | findstr /C:"Received = 0"
+IF %ERRORLEVEL% EQU 0 (
+	ECHO NETAPP ERROR >> sched_infra.log
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON016
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON016 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+ping 10.138.228.249 | findstr Packets | findstr /C:"Received = 0"
+IF %ERRORLEVEL% EQU 0 (
+	ECHO NETAPP ERROR >> sched_infra.log
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON017
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON017 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+REM delete any existing data.tif
+del data.tif
+REM retrieve the document from OTASS
+curl.exe -s --config retrieve.cfg
+REM compare with reference file
+fc /A data.tif reference.tif > NUL
+IF %ERRORLEVEL% EQU 0 (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON021
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+REM Print check item name
+ECHO MON021 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+REM delete any existing tomcat.html
+del tomcat.html
+REM retrieve the document from OTASS
+curl.exe -s --config retrieve_tomcat.cfg
+REM compare with reference file
+fc /A tomcat.html reference_tomcat.html > NUL
+IF %ERRORLEVEL% EQU 0 (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON018
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON018 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+dpctrl -dphost iasp.edc.linde.grp queues | findstr /V /C:" 0 " | findstr "error" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost iasp.edc.linde.grp queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost iasp.edc.linde.grp tools | findstr disabled >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON019
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON019 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+dpctrl -dphost MLGMUC00APP289 queues | findstr /V /C:" 0 " | findstr "error" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost MLGMUC00APP289 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost MLGMUC00APP289 tools | findstr disabled >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON020
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON020 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+dpctrl -dphost MLGMUC00APP290 queues | findstr /V /C:" 0 " | findstr "error" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost MLGMUC00APP290 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+dpctrl -dphost MLGMUC00APP290 tools | findstr disabled >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO MON022
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON022 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+ping iasprod.lg.grp | findstr Packets | findstr /C:"Received = 0
+IF %ERRORLEVEL% EQU 0 (
+	ECHO iasprod.lg.grp is down! >> sched_infra.log
+	SET OK=FALSE
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+
+exit

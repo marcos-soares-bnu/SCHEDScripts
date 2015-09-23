@@ -1,0 +1,500 @@
+ECHO off
+REM clear the screen
+cls
+REM reset the logfile
+break > sched_otass.log
+
+IF "%~1" == "" GOTO OTASS_ERR_PARAM
+IF "%~2" == "" GOTO OTASS_ERR_PARAM
+
+SET USR=%1
+SET PWD=%2
+SET HST=iasp.edc.linde.grp
+SET EXECID=%RANDOM%
+
+REM =========================================================================================================
+REM cd /ixos/ext_dir/TSY-scripts/ (Reference Path)
+REM =========================================================================================================
+
+REM GOTO MPS_TEST_DEBUG
+
+
+:MPS_TEST_DEBUG1
+REM =========================================================================================================
+ECHO OTASS001
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS001 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET OK=TRUE
+SET CMDSH="df -k | grep -v views_hs | grep -v Filesystem | cut -d\" \" -f 1 | sort"
+
+REM =====================================================================
+REM Errors Handling - File Compare with df_k_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FC check_OTASS_%EXECID%.tmp df_k_reference.txt | FINDSTR "no differences encountered" > NUL
+
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+REM	ECHO ERROR - Missing file-systems according to reference df_k_reference.txt >> sched_otass.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	FC /A check_OTASS_%EXECID%.tmp df_k_reference.txt >> sched_otass.log
+)
+
+
+REM =========================================================================================================
+ECHO OTASS002
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS002 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="df -k | grep "
+REM ECHO ERROR - Check for file-systems with filling level above 97 percent > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - LOOP Files with 98, 99 e 100% in df -k...
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+FOR %%P IN (98 99) DO (	
+
+	ECHO CHECK %%P%%
+	PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH%%%P%% >> check_OTASS_%EXECID%.tmp
+)
+
+REM =====================================================================
+REM to 100%, add command df -k | grep -v views_hs | grep 100%
+REM =====================================================================
+SET CMDSH="df -k | grep -v views_hs | grep 100%%"
+ECHO CHECK 100%%
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH%%%P%% >> check_OTASS_%EXECID%.tmp
+
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+REM =========================================================================================================
+ECHO OTASS003
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS003 >> sched_otass.log
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="df -k | grep /ixos/system | grep \"[789][0123456789]%%\""
+REM ECHO ERROR - Check for file-system /ixos/system with filling level above 70 percent > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - Check File with 70% UP in df -k...
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+ECHO CHECK UP 70%%
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+REM =========================================================================================================
+ECHO OTASS004
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS004 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET OK=TRUE
+SET CMDSH="/ixos/system/OTASS_971/bin/cdadm survey -d +d"
+
+REM =====================================================================
+REM Errors Handling - File Compare with cdadm_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FC check_OTASS_%EXECID%.tmp cdadm_reference.txt | FINDSTR "no differences encountered" > NUL
+
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+REM	ECHO ERROR - Missing file-systems according to reference cdadm_reference.txt >> sched_otass.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	FC /A check_OTASS_%EXECID%.tmp cdadm_reference.txt >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG5
+REM =========================================================================================================
+ECHO OTASS005
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS005 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET OK=TRUE
+SET CMDSH="OTASS_sql5.sh_"
+
+REM =====================================================================
+REM Errors Handling - File Compare with disabled_jobs_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% >> check_OTASS_%EXECID%.tmp
+REM -------------------------------------------------------------------------------------------------------
+REM clear_header_footer_empty
+REM -------------------------------------------------------------------------------------------------------
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FC check_OTASS_%EXECID%.tmp disabled_jobs_reference.txt | FINDSTR "no differences encountered" > NUL
+
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+REM	ECHO ERROR - Missing file-systems according to reference disabled_jobs_reference.txt >> sched_otass.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	FC /A check_OTASS_%EXECID%.tmp  disabled_jobs_reference.txt >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG6
+REM =========================================================================================================
+ECHO OTASS006
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS006 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="netstat -an | grep CLOSE_WAIT | wc -l | grep \"[0123456789][0123456789][0123456789][0123456789]*\""
+SET CMDSH1="netstat -an | grep CLOSE_WAIT"
+REM ECHO ERROR - Number of CLOSE_WAIT TCP/IP connections should by less than 100 > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - File Compare with disabled_jobs_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH1% >> check_OTASS_%EXECID%.tmp
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG7
+REM =========================================================================================================
+ECHO OTASS007
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS007 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="ps -ef | grep tomcat"
+REM ECHO ERROR - Check for running Tomcat process > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - File Compare with disabled_jobs_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "2" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG8
+REM =========================================================================================================
+ECHO OTASS008
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS008 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="ps -ef | grep /bin/spawner"
+REM ECHO ERROR - Check for running Spawner process > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - File Compare with disabled_jobs_reference.txt
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "2" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG9
+REM =========================================================================================================
+ECHO OTASS009
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS009 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET OK=TRUE
+SET CMDSH="OTASS_admclnt.sh_"
+
+REM =====================================================================
+REM Errors Handling - If NOT 1 is reported
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% >> check_OTASS_%EXECID%.tmp
+REM -------------------------------------------------------------------------------------------------------
+REM clear_header_footer_empty
+REM -------------------------------------------------------------------------------------------------------
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+TYPE check_OTASS_%EXECID%.tmp | FINDSTR "1" > NUL
+
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+REM 	ECHO ERROR - Check for OTASS Job Scheduler status >> sched_otass.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG10
+REM =========================================================================================================
+ECHO OTASS010
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS010 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="/ixos/system/OTASS_971/bin/cdadm survey -s +sdorhvi | grep bad"
+REM ECHO ERROR - Check for BAD ISO images in virtual jukebox > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - If something is reported
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG11
+REM =========================================================================================================
+ECHO OTASS011
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS011 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="find /ixos/system/var/log/messages -mmin -240 -ls | wc -l | grep \" 0\""
+REM ECHO ERROR - Number of OTASS Jobs executed withing the last 4 hours > check_OTASS_%EXECID%.tmp
+
+REM =====================================================================
+REM Errors Handling - If 0 is reported
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% %CMDSH% >> check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+
+:MPS_TEST_DEBUG12
+REM =========================================================================================================
+ECHO OTASS012
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS012 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="OTASS_sql12.sh_"
+
+REM =====================================================================
+REM Errors Handling - If a pool is reported
+REM =====================================================================
+TYPE NUL > check_OTASS_%EXECID%.tmp
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% >> check_OTASS_%EXECID%.tmp
+REM -------------------------------------------------------------------------------------------------------
+REM clear_header_footer_empty
+REM -------------------------------------------------------------------------------------------------------
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+REM	ECHO ERROR - Check for pool with more than 250%% pending data in OTASS > check_OTASS_%EXECID%.aux
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+
+:MPS_TEST_DEBUG13
+REM =========================================================================================================
+ECHO OTASS013
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS013 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+SET LINES=0
+SET CMDSH="OTASS_sql13_id.sh_"
+
+REM =====================================================================
+REM GET LAST ID - call JAR to GET from mySQL
+REM =====================================================================
+
+java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar select > check_OTASS_%EXECID%.aux
+SET /P SQL_LASTID=<check_OTASS_%EXECID%.aux
+
+REM =====================================================================
+REM GET JOB ERROR LAST ID - call SQL to GET from UNIX
+REM =====================================================================
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% > check_OTASS_%EXECID%.tmp
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "1" (
+	SET /P SQL_LASTID2=<check_OTASS_%EXECID%.tmp
+)
+
+ECHO ***     CALL APP AND READ LASTID ^(%SQL_LASTID%^) FROM mySQL     ***
+
+
+:MPS_WRITE_SQL_WITH_SQL_LASTID
+REM =====================================================================
+REM WRITE SQL WITH SHELL SCRIPT COMMANDS TO SELECT JOB ERROS+SQL_LASTID
+REM =====================================================================
+REM 
+ECHO . /ixos/system/OTASS_971/bin/profile > OTASS_sql13_r.sh_
+ECHO # --- SQL JOB WITH ERROR --- >> OTASS_sql13_r.sh_
+ECHO sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp ^<^< EOF >> OTASS_sql13_r.sh_
+ECHO SET SERVEROUTPUT ON >> OTASS_sql13_r.sh_
+ECHO SET FEEDBACK OFF >> OTASS_sql13_r.sh_
+ECHO BEGIN >> OTASS_sql13_r.sh_
+ECHO    -- Open the cursor and loop through the records >> OTASS_sql13_r.sh_
+ECHO    FOR v_rec IN ( >> OTASS_sql13_r.sh_
+ECHO 		 SELECT   JOBNAME >> OTASS_sql13_r.sh_
+ECHO 			^, ID >> OTASS_sql13_r.sh_
+ECHO 			^, STAT >> OTASS_sql13_r.sh_
+ECHO 			^, CAST (   from_tz (to_timestamp ('19700101000000', 'YYYYMMDDHH24MISS') >> OTASS_sql13_r.sh_
+ECHO 				 ^+ numtodsinterval(TIME ,'second'),'UTC') at time zone 'CET' as timestamp >> OTASS_sql13_r.sh_
+ECHO 			       ) TIME_CET >> OTASS_sql13_r.sh_
+ECHO 			^, MESSAGE >> OTASS_sql13_r.sh_
+ECHO 		   FROM ECR.ADM_JOB_PROTOCOL >> OTASS_sql13_r.sh_
+ECHO 		  WHERE stat ^<^> 'INFO' AND ID ^> %SQL_LASTID% >> OTASS_sql13_r.sh_ 
+ECHO 		  ORDER BY ID >> OTASS_sql13_r.sh_
+ECHO 		^) LOOP >> OTASS_sql13_r.sh_
+ECHO    -- Print the values >> OTASS_sql13_r.sh_
+ECHO    dbms_output.put_line^('JOBNAME: ' ^|^| v_rec.JOBNAME); >> OTASS_sql13_r.sh_
+ECHO    dbms_output.put_line^('ID     : ' ^|^| v_rec.ID); >> OTASS_sql13_r.sh_
+ECHO    dbms_output.put_line^('STATUS : ' ^|^| v_rec.STAT); >> OTASS_sql13_r.sh_
+ECHO    dbms_output.put_line^('TIME   : ' ^|^| v_rec.TIME_CET); >> OTASS_sql13_r.sh_
+ECHO    dbms_output.put_line^('MESSAGE: ' ^|^| v_rec.MESSAGE); >> OTASS_sql13_r.sh_
+ECHO    END LOOP; >> OTASS_sql13_r.sh_
+ECHO END; >> OTASS_sql13_r.sh_
+ECHO ^/ >> OTASS_sql13_r.sh_
+ECHO EXIT >> OTASS_sql13_r.sh_
+ECHO EOF >> OTASS_sql13_r.sh_
+
+
+SET LINES=0
+SET CMDSH="OTASS_sql13_r.sh_"
+REM =====================================================================
+REM Errors Handling - If a JOB is reported
+REM =====================================================================
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% > check_OTASS_%EXECID%.tmp
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F  %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+	ECHO OK
+) ELSE (
+	TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+)
+
+ECHO ***     CALL APP AND WRITE LASTID ^(%SQL_LASTID2%^) INTO mySQL     ***
+java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar update %SQL_LASTID2%
+
+
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+del check_OTASS_%EXECID%.tmp
+del check_OTASS_%EXECID%.aux
+GOTO OTASS_END
+
+
+:OTASS_ERR_PARAM
+ECHO Invalid argument, please enter 02_.CMD [USR] [PWD]!
+ECHO Invalid argument, please enter 02_.CMD [USR] [PWD]! > sched_otass.log
+GOTO OTASS_END
+
+
+:OTASS_ERR_CONN
+ECHO Invalid User/Password, please enter a correct 02_.CMD [USR] [PWD]!
+ECHO Invalid User/Password, please enter a correct 02_.CMD [USR] [PWD]! > sched_otass.log
+GOTO OTASS_END
+
+
+:OTASS_END
+exit

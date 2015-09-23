@@ -1,0 +1,18 @@
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\orders_hu.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\orders_sk.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\ORDERS_UZ.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\orders_cz.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\Anforderer_uz.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\Bankverbindungen_cz.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\Bankverbindungen_hu.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\Bankverbindungen_sk.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\Bankverbindungen_UZ.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\LIEFSTAMM_UZ.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\LIEFSTAMM_HU.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\liefstamm_sk.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\liefstamm_cz.txt | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\COSTCENTER_UZ.TXT | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+dir \\MLGMUC00APP577\e$\OCR\app\common\masterdata\GENERALLEDGER_UZ.TXT | where { (! $_.PSIsContainer) -and (((get-date)-$_.lastwritetime).days -gt 0) }
+
+
+

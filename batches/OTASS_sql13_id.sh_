@@ -1,0 +1,21 @@
+. /ixos/system/OTASS_971/bin/profile
+
+# --- SQL_LASTID ---
+sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp > SQL.lastid << EOF
+SET SERVEROUTPUT ON
+SET FEEDBACK OFF
+DECLARE
+   SQL_LASTID NUMBER;
+BEGIN
+   SELECT MAX(ID) INTO SQL_LASTID
+     FROM ECR.ADM_JOB_PROTOCOL
+    WHERE stat <> 'INFO';	 -- <> 'INFO'
+
+   DBMS_OUTPUT.PUT_LINE(SQL_LASTID);
+END;
+/
+EXIT
+EOF
+
+SQL_LASTID=$(cat SQL.lastid)
+echo $SQL_LASTID

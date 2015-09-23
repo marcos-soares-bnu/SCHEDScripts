@@ -1,0 +1,79 @@
+try {
+$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$SqlConnection.ConnectionString = "Server=MLGMUC00CSQL010\SQL1;Database=master;Integrated Security=True"
+$SqlConnection.Open()
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'RdaDb10_019'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+$SqlConnection.Close()
+Write-output "ICC Database RdaDb10_019 on MLGMUC00CSQL010.linde.lds.grp\SQL1 is $dbname"
+}
+catch
+{
+	Write-output "ERROR - ICC Database RdaDb10_019 on MLGMUC00CSQL010.linde.lds.grp\SQL1 cannot be checked"
+}
+
+try {
+$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$SqlConnection.ConnectionString = "Server=MLGMUC00CSQL010\SQL1;Database=master;Integrated Security=True"
+$SqlConnection.Open()
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'RdaDb10_041'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+$SqlConnection.Close()
+Write-output "ICC Database RdaDb10_041 on MLGMUC00CSQL010.linde.lds.grp\SQL1 is $dbname"
+}
+catch
+{
+	Write-output "ERROR - ICC Database RdaDb10_041 on MLGMUC00CSQL010.linde.lds.grp\SQL1 cannot be checked"
+}
+
+try {
+$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$SqlConnection.ConnectionString = "Server=mlgmuc00csql011\sql2;Database=master;Integrated Security=True"
+$SqlConnection.Open()
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FISPixCoreINTERN'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "PIXCORE Database FISPixCoreINTERN on mlgmuc00csql011\sql2 is $dbname"
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FCI_Linde_CZ'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "FCIR Database FCI_Linde_CZ on mlgmuc00csql011\sql2 is $dbname"
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FCI_Linde_HU'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "FCIR Database FCI_Linde_HU on mlgmuc00csql011\sql2 is $dbname"
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FCI_Linde_SK'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "FCIR Database FCI_Linde_SK on mlgmuc00csql011\sql2 is $dbname"
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FCI_Linde_UZ'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "FCIR Database FCI_Linde_UZ on mlgmuc00csql011\sql2 is $dbname"
+
+$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+$SqlCmd.CommandText = "select state_desc from sys.databases where name = 'FCI_IADB'"
+$SqlCmd.Connection = $SqlConnection
+$dbname = $SqlCmd.ExecuteScalar()
+Write-output "FCIR Database FCI_IADB on mlgmuc00csql011\sql2 is $dbname"
+}
+catch
+{
+	Write-output "ERROR - PixCore and FCIR Databases on mlgmuc00csql011\sql2 cannot be checked"
+}
+
+$SqlConnection.Close()

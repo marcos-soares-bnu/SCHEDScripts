@@ -1,0 +1,18 @@
+param([string]$user, [string]$pass);
+
+Write-Host $user, $pass;
+
+
+$CMD = '.\PLINK.EXE'
+# $CMD = 'echo'
+$arg1 = '-t'
+$arg2 = '-pw ' + $pass
+$arg3 = $name + '@iasp.edc.linde.grp'
+$arg4 = '"sudo /usr/bin/rootsh -i -u root su - ixosadmt"'
+
+# Get-Content check_OTASS.txt 
+Get-Content check_OTASS_NO_LASTID_UPDATE.txt | cmd /c .\PLINK.EXE -t -pw $pass $name@iasp.edc.linde.grp "sudo /usr/bin/rootsh -i -u root su - ixosadmt"
+ 
+
+ 
+

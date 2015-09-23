@@ -1,0 +1,19 @@
+set heading off
+set pages 0
+set feedback off
+set echo off
+COLUMN JOBNAME NEWLINE
+COLUMN ID NEWLINE
+COLUMN STAT NEWLINE
+COLUMN TIME_CET NEWLINE
+COLUMN MESSAGE NEWLINE
+spool ADM_JOBS_WITH_ERROR.tmp
+select 'JOBNAME: ' || JOBNAME as JOBNAME, 'ID     : ' || ID as ID, 'STATUS : ' || STAT as STAT,
+'TIME   : ' || cast(from_tz(to_timestamp ('19700101000000', 'YYYYMMDDHH24MISS')
++ numtodsinterval(TIME ,'second'),'UTC')
+              at time zone 'CET'
+              as timestamp
+             ) TIME_CET, 'MESSAGE: ' || MESSAGE as MESSAGE
+  from ECR.ADM_JOB_PROTOCOL  where stat <> 'INFO' and ID >= #LAST_ID# order by ID;
+spool off
+exit

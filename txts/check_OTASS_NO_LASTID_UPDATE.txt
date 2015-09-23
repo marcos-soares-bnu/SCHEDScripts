@@ -1,0 +1,8 @@
+cd /ixos/ext_dir/TSY-scripts/
+./check_OTASS.sh NO_LASTID_UPDATE
+exit
+exit
+
+
+
+

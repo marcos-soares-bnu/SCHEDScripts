@@ -1,0 +1,2 @@
+. /ixos/system/OTASS_971/bin/profile
+admclnt jb_scheduler_status
