@@ -1,3 +1,3 @@
-# testMPS
-testMPS
-hello World - 13/08/2015! xx
+# SCHEDScripts
+SCHEDScripts
+Repositório para backup de projetos não JAVA!
