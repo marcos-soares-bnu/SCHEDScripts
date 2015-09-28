@@ -1,2 +1,45 @@
-@echo off
-cmd /c D:\IAS_Monitoring\APP_Dev\SCHEDScripts\psexec \\MLGMUC00APP571 sqlcmd -U fisadmin -P FIS!admin -S mlgmuc00csql011\sql2 -Q "SELECT * FROM [FISPixCoreINTERN].[dbo].[BatchList] WHERE Priority = 0"
+@ECHO off
+REM =========================================================================================================
+REM Remote execution (Server SQLServer \\mlgmuc00app571) via PSEXEC -c...
+REM =========================================================================================================
+REM clear the screen
+cls
+
+REM =====================================================================
+REM Environment Variables
+REM =====================================================================
+SET USR=fisadmin
+SET PWD=FIS!admin
+SET SRV=mlgmuc00csql011\sql2
+SET EXECID=%RANDOM%
+SET SQLFIL14=PIXCORE_sql14_%EXECID%.sql
+
+:MPS_WRITE_SQL14
+REM =====================================================================
+REM WRITE SQL - BATCHLIST
+REM =====================================================================
+REM
+ECHO SELECT	 > %SQLFIL14%
+ECHO		 btl.Name										+ ' ('	+ >> %SQLFIL14%
+ECHO		 CONVERT(varchar(23), btl.CreationDate, 121)	+ ') ('	+ >> %SQLFIL14%
+ECHO		 CONVERT(varchar(9), btl.Priority)				+ ') ('	+ >> %SQLFIL14%
+ECHO		 btl.ProcessId									+ ')' >> %SQLFIL14%
+ECHO  FROM	 >> %SQLFIL14%
+ECHO		 FISPixCoreINTERN.dbo.BatchList btl >> %SQLFIL14%
+ECHO WHERE	 >> %SQLFIL14%
+ECHO		 btl.Priority = 0 >> %SQLFIL14%
+ECHO ORDER 	 >> %SQLFIL14%
+ECHO    BY	 btl.Name DESC >> %SQLFIL14%
+
+REM =====================================================================
+REM Errors Handling - If find Priority 0
+REM =====================================================================
+SQLCMD.EXE -U %USR% -P %PWD% -S %SRV% -i %SQLFIL14%
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+del %SQLFIL14%
+:PIXCORE_END
+exit

@@ -1,0 +1,67 @@
+@ECHO off
+REM =========================================================================================================
+REM Remote execution (Server SQLServer \\mlgmuc00app571) via PSEXEC -c...
+REM =========================================================================================================
+REM clear the screen
+cls
+
+REM =====================================================================
+REM Environment Variables
+REM =====================================================================
+SET USR=fisadmin
+SET PWD=FIS!admin
+SET SRV=mlgmuc00csql011\sql2
+SET EXECID=%RANDOM%
+SET SQLFIL6=FCIR_sql6_%EXECID%.sql
+
+:MPS_WRITE_SQL6
+REM =====================================================================
+REM WRITE SQL - JOINS FCI_IADB.dbo.Tbl_Batches / ProcessFlows / Steps
+REM =====================================================================
+REM
+ECHO SELECT	 TOP 2 > %SQLFIL6%
+ECHO 		 CASE >> %SQLFIL6%
+ECHO 			WHEN SUM(ps.STReady) + SUM(ps.STSent) + SUM(ps.STWorking) + SUM(ps.STError) ^> 5 >> %SQLFIL6%
+ECHO 				THEN '\totTotalsErr\ TRUE' >> %SQLFIL6%
+ECHO 				ELSE '\totTotalsErr\ FALSE' >> %SQLFIL6%
+ECHO 		 END + >> %SQLFIL6%
+ECHO 		 CASE >> %SQLFIL6%
+ECHO 			WHEN (DATEDIFF(SECOND, CONVERT(DATETIME, STUFF(STUFF(STUFF(SUBSTRING(bt.BTBatchName, PATINDEX('%%^_20%%',bt.BTBatchName)+1, 14), 9, 0, ' '), 12, 0, ':'), 15, 0, ':')), GETDATE()) / 3600.0) ^> 4 >> %SQLFIL6%
+ECHO 				THEN '\timeDiffErr\ TRUE' >> %SQLFIL6%
+ECHO 				ELSE '\timeDiffErr\ FALSE' >> %SQLFIL6%
+ECHO 		 END + '(' + >> %SQLFIL6%
+ECHO 		 ps.STModuleName + ')(' + >> %SQLFIL6%
+ECHO 		 bt.BTBatchName + ')(' + >> %SQLFIL6%
+ECHO 		 CONVERT(VARCHAR, SUM(ps.STReady)) + ')(' + >> %SQLFIL6%
+ECHO 		 CONVERT(VARCHAR, SUM(ps.STSent)) + ')(' + >> %SQLFIL6%
+ECHO 		 CONVERT(VARCHAR, SUM(ps.STWorking)) + ')(' + >> %SQLFIL6%
+ECHO 		 CONVERT(VARCHAR, SUM(ps.STError)) + ')(' + >> %SQLFIL6%
+ECHO 		 CONVERT(VARCHAR, (SUM(ps.STReady) + SUM(ps.STSent) + SUM(ps.STWorking) + SUM(ps.STError))) + ')' >> %SQLFIL6%
+ECHO   FROM	>> %SQLFIL6% 
+ECHO 		 FCI_IADB.dbo.Tbl_Batches			bt >> %SQLFIL6%
+ECHO 		^,FCI_IADB.dbo.Tbl_ProcessFlows		pf >> %SQLFIL6%
+ECHO 		^,FCI_IADB.dbo.Tbl_ProcessFlowSteps	ps >> %SQLFIL6%
+ECHO  WHERE	>> %SQLFIL6%
+ECHO 		 bt.BTServerID	 = pf.PFServerID >> %SQLFIL6%
+ECHO    AND	 pf.PFGuid		 = ps.STProcessFlowGuid >> %SQLFIL6%
+ECHO    AND	 pf.PFServerID	 = ps.STServerID >> %SQLFIL6%
+ECHO    AND	 ps.STModuleName IN ( 'IX_AMR', 'IX_PSR' ) >> %SQLFIL6%
+ECHO    AND	(	(ps.STReady	^> 0) OR (ps.STSent ^> 0) OR (ps.STWorking ^> 0) ) >> %SQLFIL6%
+ECHO  GROUP BY >> %SQLFIL6%
+ECHO 		 bt.BTBatchName >> %SQLFIL6%
+ECHO 		^,ps.STModuleName >> %SQLFIL6%
+ECHO  ORDER BY >> %SQLFIL6%
+ECHO 		 SUBSTRING(bt.BTBatchName, PATINDEX('%%^_20%%',bt.BTBatchName)+1, 14) DESC >> %SQLFIL6%
+
+REM =====================================================================
+REM Errors Handling - If find IX_AMR/IX_PSR, test tot < 5 and batch < 4h
+REM =====================================================================
+SQLCMD.EXE -U %USR% -P %PWD% -S %SRV% -i %SQLFIL6%
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+del %SQLFIL6%
+:FCIR_END
+exit

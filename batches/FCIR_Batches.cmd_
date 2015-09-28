@@ -1,2 +1,49 @@
-@echo off
-cmd /c D:\IAS_Monitoring\APP_Dev\SCHEDScripts\psexec \\MLGMUC00APP571 sqlcmd -U fisadmin -P FIS!admin -S mlgmuc00csql011\sql2 -Q "SELECT * FROM [FCI_IADB].[dbo].[Tbl_Batches] WHERE [BTPriority] = 0"
+@ECHO off
+REM =========================================================================================================
+REM Remote execution (Server SQLServer \\mlgmuc00app571) via PSEXEC -c...
+REM =========================================================================================================
+REM clear the screen
+cls
+
+REM =====================================================================
+REM Environment Variables
+REM =====================================================================
+SET USR=fisadmin
+SET PWD=FIS!admin
+SET SRV=mlgmuc00csql011\sql2
+SET EXECID=%RANDOM%
+SET SQLFIL5=FCIR_sql5_%EXECID%.sql
+
+:MPS_WRITE_SQL5
+REM =====================================================================
+REM WRITE SQL - JOINS FCI_IADB.dbo.Tbl_Batches / ProcessFlows / Steps
+REM =====================================================================
+REM
+ECHO SELECT	 > %SQLFIL5%
+ECHO 		 bt.BTBatchName									+ ' ('	+ >> %SQLFIL5%
+ECHO 		 CONVERT(varchar(23), bt.BTCreationDttm, 121)	+ ') ('	+ >> %SQLFIL5%
+ECHO 		 CONVERT(varchar(9), bt.BTPriority)				+ ') ('	+ >> %SQLFIL5%
+ECHO 		 CONVERT(varchar(9), bt.BTBatchID)				+ ') ('	+ >> %SQLFIL5%
+ECHO 		 bt.BTProcessFlowName							+ ') ('	+ >> %SQLFIL5%
+ECHO 		 sv.SRName										+ ')' >> %SQLFIL5%
+ECHO   FROM	 >> %SQLFIL5%
+ECHO 		 FCI_IADB.dbo.Tbl_Batches bt >> %SQLFIL5%
+ECHO 		^,FCI_IADB.dbo.Tbl_Server sv >> %SQLFIL5%
+ECHO  WHERE	 >> %SQLFIL5%
+ECHO 		 bt.BTServerID = sv.SRSerialNumber >> %SQLFIL5%
+ECHO    AND	 bt.BTPriority = 0 >> %SQLFIL5%
+ECHO  ORDER	 >> %SQLFIL5%
+ECHO     BY	 bt.BTCreationDttm DESC >> %SQLFIL5%
+
+REM =====================================================================
+REM Errors Handling - If find Priority 0
+REM =====================================================================
+SQLCMD.EXE -U %USR% -P %PWD% -S %SRV% -i %SQLFIL5%
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+del %SQLFIL5%
+:FCIR_END
+exit

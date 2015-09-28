@@ -401,6 +401,73 @@ IF "%OK%" EQU "TRUE" (
 	type check_PIXCORE_%EXECID%.tmp >> sched_pixcore.log
 	echo NOK
 )
-del check_PIXCORE_%EXECID%.tmp
 
+REM =========================================================================================================
+REM MPS - new implementation - em SET/2015
+REM =========================================================================================================
+REM del check_PIXCORE_%EXECID%.tmp
+REM exit
+
+
+REM =====================================================================
+REM Environment Variables
+REM =====================================================================
+SET LOGFILE=sched_pixcore.log
+SET TMPFILE=check_PIXCORE_%EXECID%.tmp
+SET AUXFILE=check_PIXCORE_%EXECID%.aux
+
+GOTO MPS_TEST_DEBUG
+
+:MPS_TEST_DEBUG
+REM =========================================================================================================
+ECHO PIX014
+ECHO ----------------------CHECKS------------------------------ >> %LOGFILE%
+ECHO PIX014 >> %LOGFILE%
+ECHO ----------------------ERRORS------------------------------ >> %LOGFILE%
+
+:MPS_CALL_SQL14
+REM =====================================================================
+REM CALL SQL - BatchList
+REM =====================================================================
+REM =====================================================================
+REM Errors Handling - If find Priority 0
+REM =====================================================================
+SET LINES=0
+
+PSEXEC \\MLGMUC00APP571 -c PIXCORE_BatchList.cmd 1>%TMPFILE%
+FINDSTR "(0)" %TMPFILE% > %AUXFILE%
+
+FOR /F  %%A IN (%AUXFILE%) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "0" (
+ 	ECHO OK
+) 	ELSE (
+ 	ECHO ERRO
+	TYPE %AUXFILE% >> %LOGFILE%
+)
+
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+del %TMPFILE%
+del %AUXFILE%
+
+GOTO PIX_END
+
+
+:PIX_ERR_PARAM
+ECHO Invalid argument!
+ECHO Invalid argument! > %LOGFILE%
+GOTO PIX_END
+
+
+:PIX_ERR_CONN
+ECHO Error generic!
+ECHO Error generic! > %LOGFILE%
+GOTO PIX_END
+
+
+:PIX_END
 exit
