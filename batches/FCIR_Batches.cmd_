@@ -32,6 +32,7 @@ ECHO 		^,FCI_IADB.dbo.Tbl_Server sv >> %SQLFIL5%
 ECHO  WHERE	 >> %SQLFIL5%
 ECHO 		 bt.BTServerID = sv.SRSerialNumber >> %SQLFIL5%
 ECHO    AND	 bt.BTPriority = 0 >> %SQLFIL5%
+ECHO    AND	 DATEDIFF(MINUTE, bt.BTCreationDttm, GETDATE()) ^> 30 >> %SQLFIL5%
 ECHO  ORDER	 >> %SQLFIL5%
 ECHO     BY	 bt.BTCreationDttm DESC >> %SQLFIL5%
 

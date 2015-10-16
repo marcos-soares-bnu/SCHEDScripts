@@ -28,6 +28,7 @@ ECHO  FROM	 >> %SQLFIL14%
 ECHO		 FISPixCoreINTERN.dbo.BatchList btl >> %SQLFIL14%
 ECHO WHERE	 >> %SQLFIL14%
 ECHO		 btl.Priority = 0 >> %SQLFIL14%
+ECHO   AND	 DATEDIFF(MINUTE, btl.CreationDate, GETDATE()) ^> 30 >> %SQLFIL14%
 ECHO ORDER 	 >> %SQLFIL14%
 ECHO    BY	 btl.Name DESC >> %SQLFIL14%
 
