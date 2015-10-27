@@ -437,7 +437,7 @@ ECHO 				 ^+ numtodsinterval(TIME ,'second'),'UTC') at time zone 'CET' as timest
 ECHO 			       ) TIME_CET >> OTASS_sql13_r.sh_
 ECHO 			^, MESSAGE >> OTASS_sql13_r.sh_
 ECHO 		   FROM ECR.ADM_JOB_PROTOCOL >> OTASS_sql13_r.sh_
-ECHO 		  WHERE stat ^<^> 'INFO' AND ID ^> %SQL_LASTID% >> OTASS_sql13_r.sh_ 
+ECHO 		  WHERE ID ^> %SQL_LASTID% >> OTASS_sql13_r.sh_ 
 ECHO 		  ORDER BY ID >> OTASS_sql13_r.sh_
 ECHO 		^) LOOP >> OTASS_sql13_r.sh_
 ECHO    -- Print the values >> OTASS_sql13_r.sh_
