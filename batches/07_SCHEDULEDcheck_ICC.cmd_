@@ -1,0 +1,78 @@
+ECHO off
+cls
+
+setlocal enableextensions enabledelayedexpansion
+REM SET EXECID=%RANDOM%
+SET EXECID=test
+SET /A COUNT=0
+SET EXEFILE=ICCcheck
+SET LOGFILE=sched_icc.log
+SET JARFILE=%EXEFILE%.jar
+SET LOGJARFILE=%EXEFILE%.log
+SET TMPFILE=ICCcheck.tmp
+REM =========================================================================================================
+SET SERVICE=tracing
+SET PROCESS=doku
+SET LOCALSR=dTrace
+SET USAGE=-all
+REM =========================================================================================================
+
+REM =========================================================================================================
+SET LOCALDIR=.\Testes\MPS\ICClogs
+REM =========================================================================================================
+
+break > %LOGFILE%
+break > %LOGJARFILE%
+
+REM GOTO MPS_TEST_DEBUG
+REM =========================================================================================================
+REM Call External JAVA App to set Errors into checks Files...
+REM =========================================================================================================
+FOR %%S IN (MLGMUC00SAP019 MLGMUC00SAP041) DO (	
+
+REM =========================================================================================================
+	ECHO ------------------%%S-------------------------- 
+	ECHO param = %%S %SERVICE% %PROCESS% %LOCALSR% %USAGE% %EXECID%
+	ECHO ---------------------------------------------- 
+	java -jar ICCcheck.jar %%S %SERVICE% %PROCESS% %LOCALSR% %USAGE% %EXECID% >> %LOGJARFILE%
+REM =========================================================================================================
+
+
+REM =========================================================================================================
+	FOR %%E IN (ext ovw cln ops hst) DO (	
+
+		SET /A COUNT+=1
+		ECHO ICC00!COUNT!
+		ECHO ----------------------CHECKS------------------------------ >> %LOGFILE%
+		ECHO ICC00!COUNT! >> %LOGFILE%
+		ECHO ----------------------ERRORS------------------------------ >> %LOGFILE%
+		SET OK=TRUE
+		SET LINES=0
+
+		FOR /F  %%A IN (%TMPFILE%.%%S.%EXECID%.%%E) DO (SET /A LINES+=1)
+
+		IF "!LINES!" EQU "0" (
+			ECHO OK
+		) ELSE (
+			ECHO ERROR
+			TYPE %TMPFILE%.%%S.%EXECID%.%%E >> %LOGFILE%
+		)
+	)
+REM =========================================================================================================
+	
+)
+
+
+REM GOTO ICC_END
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+REM *** del - move
+move /Y *.MLGMUC00SAP019.* %LOCALDIR%
+move /Y *.MLGMUC00SAP041.* %LOCALDIR%
+GOTO ICC_END
+
+
+:ICC_END
+REM exit
