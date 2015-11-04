@@ -69,10 +69,10 @@ REM End of Script.
 REM =====================================================================
 
 REM *** del - move
-move /Y *.MLGMUC00SAP019.* %LOCALDIR%
-move /Y *.MLGMUC00SAP041.* %LOCALDIR%
+move /Y *.MLGMUC00SAP019.* %LOCALDIR% >> %LOGJARFILE%
+move /Y *.MLGMUC00SAP041.* %LOCALDIR% >> %LOGJARFILE%
 GOTO ICC_END
 
 
 :ICC_END
-REM exit
+exit
