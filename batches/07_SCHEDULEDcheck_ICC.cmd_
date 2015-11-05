@@ -2,14 +2,20 @@ ECHO off
 cls
 
 setlocal enableextensions enabledelayedexpansion
-REM SET EXECID=%RANDOM%
-SET EXECID=test
+REM =========================================================================================================
+SET EXECID=%RANDOM%
 SET /A COUNT=0
-SET EXEFILE=ICCcheck
+SET /A COUNTRESET=0
+REM =========================================================================================================
+
+REM =========================================================================================================
+SET EXEFILE=ICCcheckExec
 SET LOGFILE=sched_icc.log
 SET JARFILE=%EXEFILE%.jar
 SET LOGJARFILE=%EXEFILE%.log
 SET TMPFILE=ICCcheck.tmp
+REM =========================================================================================================
+
 REM =========================================================================================================
 SET SERVICE=tracing
 SET PROCESS=doku
@@ -18,26 +24,66 @@ SET USAGE=-all
 REM =========================================================================================================
 
 REM =========================================================================================================
+REM *** MAXTIMEPROC - Minutes Max. Itens in Processing / MAXPERCERR - % Max. Errors in LOG Files (History)
+SET MAXTIMEPROC=15
+SET MAXPERCERR=5
+REM =========================================================================================================
+
+REM =========================================================================================================
 SET LOCALDIR=.\Testes\MPS\ICClogs
+SET HOST=MLGMUC00SAP019
 REM =========================================================================================================
 
 break > %LOGFILE%
 break > %LOGJARFILE%
 
-REM GOTO MPS_TEST_DEBUG
-REM =========================================================================================================
-REM Call External JAVA App to set Errors into checks Files...
-REM =========================================================================================================
-FOR %%S IN (MLGMUC00SAP019 MLGMUC00SAP041) DO (	
 
+
+REM *** Delete TMPFILE and try create errors of LOGs files, If some error, delete this and restart...
 REM =========================================================================================================
-	ECHO ------------------%%S-------------------------- 
-	ECHO param = %%S %SERVICE% %PROCESS% %LOCALSR% %USAGE% %EXECID%
-	ECHO ---------------------------------------------- 
-	java -jar ICCcheck.jar %%S %SERVICE% %PROCESS% %LOCALSR% %USAGE% %EXECID% >> %LOGJARFILE%
+:MPS_RESTART
+
+MOVE /Y %TMPFILE% %TMPFILE%.%EXECID%.!COUNTRESET! >> %LOGJARFILE%
+
 REM =========================================================================================================
 
 
+REM =========================================================================================================
+REM Call External JAVA App to set Errors into checks Files... If some error, restart...
+REM =========================================================================================================
+
+FOR %%S IN (%HOST%) DO (
+
+
+REM *** LOOP - Usage ICCcheckExec ***   / 
+REM =========================================================================================================
+	FOR %%U IN (-x -v -n -o -h) DO (
+
+		REM =========================================================================================
+		IF "%%U" EQU "-x" SET EXT=ext
+		IF "%%U" EQU "-v" SET EXT=ovw
+		IF "%%U" EQU "-n" SET EXT=cln
+		IF "%%U" EQU "-o" SET EXT=ops
+		IF "%%U" EQU "-h" SET EXT=hst
+		REM =========================================================================================
+
+		IF NOT EXIST %TMPFILE%.%%S.%EXECID%.%EXT% (
+
+			SET /A COUNTRESET+=1
+			ECHO ------------------%%S-------------------------- 
+			ECHO params = %%S %SERVICE% %PROCESS% %LOCALSR% %%U %MAXTIMEPROC% %MAXPERCERR% %EXECID%
+			ECHO ---------------------------------------------------------- 
+			java -jar %JARFILE% %%S %SERVICE% %PROCESS% %LOCALSR% %%U %MAXTIMEPROC% %MAXPERCERR% %EXECID% >> %LOGJARFILE%
+
+			TIMEOUT /T 12 /NOBREAK
+
+			IF EXIST %TMPFILE% GOTO MPS_RESTART
+		)
+	)
+REM =========================================================================================================
+
+
+REM *** LOOP - File Types ICCcheckExec ***
 REM =========================================================================================================
 	FOR %%E IN (ext ovw cln ops hst) DO (	
 
@@ -56,22 +102,39 @@ REM ============================================================================
 		) ELSE (
 			ECHO ERROR
 			TYPE %TMPFILE%.%%S.%EXECID%.%%E >> %LOGFILE%
+			ECHO. >> %LOGFILE%
 		)
 	)
 REM =========================================================================================================
-	
+
 )
 
 
-REM GOTO ICC_END
-REM =====================================================================
-REM End of Script.
-REM =====================================================================
+REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041) ***
+REM =========================================================================================================
 
-REM *** del - move
-move /Y *.MLGMUC00SAP019.* %LOCALDIR% >> %LOGJARFILE%
-move /Y *.MLGMUC00SAP041.* %LOCALDIR% >> %LOGJARFILE%
-GOTO ICC_END
+IF "%HOST%" EQU "MLGMUC00SAP019" (
+
+	SET HOST=MLGMUC00SAP041
+	GOTO MPS_RESTART
+)
+REM =========================================================================================================
+
+
+
+REM End of Script - *** del - move
+REM =========================================================================================================
+MOVE /Y *.MLGMUC00SAP019.* %LOCALDIR% >> %LOGJARFILE%
+MOVE /Y *.MLGMUC00SAP041.* %LOCALDIR% >> %LOGJARFILE%
+REM =========================================================================================================
+
+
+
+REM Copy log's to check...
+REM =========================================================================================================
+COPY /Y %LOGFILE% %LOCALDIR%\%LOGFILE%.%EXECID% >> %LOGJARFILE%
+MOVE /Y %LOGJARFILE% %LOCALDIR%\%LOGJARFILE%.%EXECID%
+REM =========================================================================================================
 
 
 :ICC_END
