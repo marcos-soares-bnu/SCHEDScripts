@@ -1,73 +1,84 @@
 ECHO off
-cls
+CLS
 
-setlocal enableextensions enabledelayedexpansion
-REM =========================================================================================================
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
+REM *** MAXTIMEPROC - Minutes Max. Itens in Processing / MAXPERCERR - % Max. Errors in LOG Files (History)...
+REM ---------------------------------------------------------------------------------------------------------
+SET MAXTIMEPROC=15
+SET MAXPERCERR=5
+REM ---------------------------------------------------------------------------------------------------------
+
+REM ---------------------------------------------------------------------------------------------------------
 SET EXECID=%RANDOM%
 SET /A COUNT=0
 SET /A COUNTRESET=0
-REM =========================================================================================================
+SET TIMEWAIT=6
+REM ---------------------------------------------------------------------------------------------------------
 
-REM =========================================================================================================
+REM ---------------------------------------------------------------------------------------------------------
 SET EXEFILE=ICCcheckExec
 SET LOGFILE=sched_icc.log
 SET JARFILE=%EXEFILE%.jar
-SET LOGJARFILE=%EXEFILE%.log
+SET LOGJARFILE=%EXEFILE%.%EXECID%.log
 SET TMPFILE=ICCcheck.tmp
-REM =========================================================================================================
+SET ZIPFILE=ICCcheck.7za.%EXECID%.zip
+REM ---------------------------------------------------------------------------------------------------------
 
-REM =========================================================================================================
+REM ---------------------------------------------------------------------------------------------------------
+SET HOST=MLGMUC00SAP019
 SET SERVICE=tracing
 SET PROCESS=doku
 SET LOCALSR=dTrace
-SET USAGE=-all
-REM =========================================================================================================
+SET USAGE=-x
+SET FILETYPE=ext
+REM ---------------------------------------------------------------------------------------------------------
 
-REM =========================================================================================================
-REM *** MAXTIMEPROC - Minutes Max. Itens in Processing / MAXPERCERR - % Max. Errors in LOG Files (History)
-SET MAXTIMEPROC=15
-SET MAXPERCERR=5
-REM =========================================================================================================
-
-REM =========================================================================================================
-SET LOCALDIR=.\Testes\MPS\ICClogs
-SET HOST=MLGMUC00SAP019
-REM =========================================================================================================
+REM ---------------------------------------------------------------------------------------------------------
+SET LOCALDIR=\Testes\MPS\ICClogs
+REM ---------------------------------------------------------------------------------------------------------
 
 break > %LOGFILE%
 break > %LOGJARFILE%
 
 
 
-REM *** Delete TMPFILE and try create errors of LOGs files, If some error, delete this and restart...
+REM *** Print LocalDateTime...
 REM =========================================================================================================
-:MPS_RESTART
+FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
+ECHO ---------------------------------------------------------- 
+ECHO Start Processing...  %OSDATETIME%
+ECHO ---------------------------------------------------------- 
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
+ECHO Start Processing...  %OSDATETIME% >> %LOGJARFILE%
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
+REM =========================================================================================================
 
+
+
+REM *** Delete TMPFILE and try create errors of LOGs files, If some error, move this and restart...
+REM =========================================================================================================
+:TMP_RESTART
 MOVE /Y %TMPFILE% %TMPFILE%.%EXECID%.!COUNTRESET! >> %LOGJARFILE%
 
-REM =========================================================================================================
 
 
-REM =========================================================================================================
-REM Call External JAVA App to set Errors into checks Files... If some error, restart...
-REM =========================================================================================================
+:TMP_USAGE
 
+REM *** Call External JAVA App to set Errors in checks Files... 
+REM *** If some error occur, restart from last check done...
+REM =========================================================================================================
+REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
+REM ---------------------------------------------------------------------------------------------------------
 FOR %%S IN (%HOST%) DO (
 
+REM ---------------------------------------------------------------------------------------------------------
+	FOR %%U IN (%USAGE%) DO (
 
-REM *** LOOP - Usage ICCcheckExec ***   / 
-REM =========================================================================================================
-	FOR %%U IN (-x -v -n -o -h) DO (
+		ECHO ---------------------------------------------------------- 
+		ECHO check IF NOT EXIST = %TMPFILE%.%%S.%EXECID%.%FILETYPE%
+		ECHO ---------------------------------------------------------- 
 
-		REM =========================================================================================
-		IF "%%U" EQU "-x" SET EXT=ext
-		IF "%%U" EQU "-v" SET EXT=ovw
-		IF "%%U" EQU "-n" SET EXT=cln
-		IF "%%U" EQU "-o" SET EXT=ops
-		IF "%%U" EQU "-h" SET EXT=hst
-		REM =========================================================================================
-
-		IF NOT EXIST %TMPFILE%.%%S.%EXECID%.%EXT% (
+		IF NOT EXIST %TMPFILE%.%%S.%EXECID%.%FILETYPE% (
 
 			SET /A COUNTRESET+=1
 			ECHO ------------------%%S-------------------------- 
@@ -75,16 +86,43 @@ REM ============================================================================
 			ECHO ---------------------------------------------------------- 
 			java -jar %JARFILE% %%S %SERVICE% %PROCESS% %LOCALSR% %%U %MAXTIMEPROC% %MAXPERCERR% %EXECID% >> %LOGJARFILE%
 
-			TIMEOUT /T 12 /NOBREAK
+			TIMEOUT /T %TIMEWAIT% /NOBREAK
 
-			IF EXIST %TMPFILE% GOTO MPS_RESTART
+			IF EXIST %TMPFILE% GOTO TMP_RESTART
 		)
 	)
-REM =========================================================================================================
+REM ---------------------------------------------------------------------------------------------------------
 
+REM *** LOOP - USAGE (-x, -v, -n, -o, -h)...
+REM ---------------------------------------------------------------------------------------------------------
+	IF "%USAGE%" EQU "-x" (
+		SET FILETYPE=ovw
+		SET USAGE=-v
+		GOTO TMP_USAGE
+	)
+	IF "%USAGE%" EQU "-v" (
+		SET FILETYPE=cln
+		SET USAGE=-n
+		GOTO TMP_USAGE
+	)
+	IF "%USAGE%" EQU "-n" (
+		SET FILETYPE=ops
+		SET USAGE=-o
+		GOTO TMP_USAGE
+	)
+	IF "%USAGE%" EQU "-o" (
+		SET FILETYPE=hst
+		SET USAGE=-h
+		GOTO TMP_USAGE
+	)
+	IF "%USAGE%" EQU "-h" (
+		SET FILETYPE=ext
+		SET USAGE=-x
+	)
+REM ---------------------------------------------------------------------------------------------------------
 
-REM *** LOOP - File Types ICCcheckExec ***
-REM =========================================================================================================
+REM *** LOOP - File Types ICCcheckExec (ext, ovw, cln, ops, hst)...
+REM ---------------------------------------------------------------------------------------------------------
 	FOR %%E IN (ext ovw cln ops hst) DO (	
 
 		SET /A COUNT+=1
@@ -105,37 +143,80 @@ REM ============================================================================
 			ECHO. >> %LOGFILE%
 		)
 	)
-REM =========================================================================================================
-
+REM ---------------------------------------------------------------------------------------------------------
 )
 
-
-REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041) ***
-REM =========================================================================================================
-
+REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
+REM ---------------------------------------------------------------------------------------------------------
 IF "%HOST%" EQU "MLGMUC00SAP019" (
 
 	SET HOST=MLGMUC00SAP041
-	GOTO MPS_RESTART
+	SET USAGE=-x
+	SET FILETYPE=ext
+	GOTO TMP_RESTART
+)
+REM ---------------------------------------------------------------------------------------------------------
+
+REM GOTO ICC_END
+
+
+
+:ICC_ARCH
+REM *** Print Info...
+REM =========================================================================================================
+FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
+ECHO ---------------------------------------------------------- 
+ECHO ICC_ARCH - Archiving...  %OSDATETIME%
+ECHO ---------------------------------------------------------- 
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
+ECHO ICC_ARCH - Archiving...  %OSDATETIME% >> %LOGJARFILE%
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
+REM =========================================================================================================
+
+
+REM *** ZIP/Move/Copy Files to check the executation...
+REM =========================================================================================================
+COPY /Y %LOGFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
+
+IF EXIST "7za.exe" (
+
+	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP019.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP041.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
+
+	DEL *.MLGMUC00SAP019.* >> %LOGJARFILE%
+	DEL *.MLGMUC00SAP041.* >> %LOGJARFILE%
+	DEL %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
+	DEL %LOGFILE%.%EXECID% >> %LOGJARFILE%
+	
+) ELSE (
+
+	MOVE /Y *.MLGMUC00SAP019.* .%LOCALDIR% >> %LOGJARFILE%
+	MOVE /Y *.MLGMUC00SAP041.* .%LOCALDIR% >> %LOGJARFILE%
+	MOVE /Y %TMPFILE%.%EXECID%.* .%LOCALDIR% >> %LOGJARFILE%
+	MOVE /Y %LOGFILE%.%EXECID% .%LOCALDIR% >> %LOGJARFILE%
+)
+
+IF EXIST "7za.exe" (
+
+	7za.exe a -tzip %ZIPFILE% %LOGJARFILE%
+	MOVE /Y %ZIPFILE% .%LOCALDIR%
+	DEL %LOGJARFILE%
+
+) ELSE (
+
+	MOVE /Y %LOGJARFILE% .%LOCALDIR%
 )
 REM =========================================================================================================
 
 
 
-REM End of Script - *** del - move
-REM =========================================================================================================
-MOVE /Y *.MLGMUC00SAP019.* %LOCALDIR% >> %LOGJARFILE%
-MOVE /Y *.MLGMUC00SAP041.* %LOCALDIR% >> %LOGJARFILE%
-REM =========================================================================================================
-
-
-
-REM Copy log's to check...
-REM =========================================================================================================
-COPY /Y %LOGFILE% %LOCALDIR%\%LOGFILE%.%EXECID% >> %LOGJARFILE%
-MOVE /Y %LOGJARFILE% %LOCALDIR%\%LOGJARFILE%.%EXECID%
-REM =========================================================================================================
-
-
 :ICC_END
-exit
+REM *** Print EOF! ...
+REM =========================================================================================================
+FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
+ECHO ---------------------------------------------------------- 
+ECHO EOF.  %OSDATETIME% 
+ECHO ---------------------------------------------------------- 
+REM exit
