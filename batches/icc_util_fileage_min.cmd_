@@ -1,0 +1,32 @@
+@if (@CodeSection==@Batch) @then
+
+@echo off
+setlocal
+
+set "file=%1"
+
+IF NOT EXIST %file% GOTO file_NOTFOUND
+
+rem *** value contained in %%I is in minutes...
+for /f %%I in ('cscript /nologo /e:JScript "%~f0" "%file%"') do (
+    echo %%I
+	goto :EOF
+)
+
+:file_NOTFOUND
+echo 99999
+
+goto :EOF
+
+@end // end batch portion / begin JScript hybrid chimera
+
+var fso = new ActiveXObject("scripting.filesystemobject"),
+    arg = WSH.Arguments(0),
+    file = fso.FileExists(arg) ? fso.GetFile(arg) : fso.GetFolder(arg);
+
+// Use either DateCreated, DateLastAccessed, or DateLastModified.
+// See http://msdn.microsoft.com/en-us/library/1ft05taf%28v=vs.84%29.aspx
+// for more info.
+
+var age = new Date() - file.DateLastModified;
+WSH.Echo(Math.floor(age / 1000 / 60));

@@ -24,6 +24,17 @@ SET TMPFILE=ICCcheck.tmp
 SET ZIPFILE=ICCcheck.7za.%EXECID%.zip
 REM ---------------------------------------------------------------------------------------------------------
 
+REM *** SET AGE OF LOGFILE - Updatetime must be GTR to TIMEEXECMIN, else GOTO END...
+REM ---------------------------------------------------------------------------------------------------------
+SET TIMEEXECMIN=30
+@FOR /F "tokens=*" %%I IN ('icc_util_fileage_min.cmd %LOGFILE%') DO SET AGELOGFILE=%%I
+
+IF %AGELOGFILE% LEQ %TIMEEXECMIN% (
+	ECHO %LOGFILE% has only %AGELOGFILE% min of Age...
+	GOTO ICC_END
+)
+REM ---------------------------------------------------------------------------------------------------------
+
 REM ---------------------------------------------------------------------------------------------------------
 SET HOST=MLGMUC00SAP019
 SET SERVICE=tracing
@@ -59,6 +70,10 @@ REM *** Delete TMPFILE and try create errors of LOGs files, If some error, move 
 REM =========================================================================================================
 :TMP_RESTART
 MOVE /Y %TMPFILE% %TMPFILE%.%EXECID%.!COUNTRESET! >> %LOGJARFILE%
+
+IF %COUNTRESET% GTR 40 (
+	GOTO ICC_ERR
+)
 
 
 
@@ -208,6 +223,19 @@ IF EXIST "7za.exe" (
 
 	MOVE /Y %LOGJARFILE% .%LOCALDIR%
 )
+GOTO ICC_END
+REM =========================================================================================================
+
+
+
+:ICC_ERR
+REM =========================================================================================================
+ECHO ---------------------------------------------------------- 
+ECHO Error Reset - Timeout ICC COUNTRESET = %COUNTRESET%
+ECHO ---------------------------------------------------------- 
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
+ECHO Error Reset - Timeout ICC COUNTRESET = %COUNTRESET% >> %LOGJARFILE%
+ECHO ---------------------------------------------------------- >> %LOGJARFILE%
 REM =========================================================================================================
 
 
@@ -219,4 +247,4 @@ FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OS
 ECHO ---------------------------------------------------------- 
 ECHO EOF.  %OSDATETIME% 
 ECHO ---------------------------------------------------------- 
-REM exit
+exit
