@@ -252,12 +252,16 @@ ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.l
 ECHO DPWIN006 >> sched_dpwin.log
 ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
 SET OK=TRUE
-dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr "hc_scanning.pl.sem"
+SET FILECHECK="hc_scanning.pl.sem"
+
+dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr %FILECHECK% >NUL
 IF %ERRORLEVEL% EQU 0 (
 	psexec \\MLGMUC00APP289 schtasks /Query /V /TN "enq_HC_SCR3-DE" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
 	findstr /I /C:"Last Result:                          267009" check_DPWIN_%EXECID%.tmp
-	IF %ERRORLEVEL% EQU 1 (
-		dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr "hc_scanning.pl.sem" >> sched_dpwin.log
+	IF %ERRORLEVEL% EQU 0 (
+		psexec \\MLGMUC00APP289 cmd /c "date /t & time /t" 2>NUL >> sched_dpwin.log
+		ECHO ----------------------CONFIG------------------------------ >> sched_dpwin.log
+		dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr %FILECHECK% >> sched_dpwin.log
 		psexec \\MLGMUC00APP289 schtasks /Query /V /TN "enq_HC_SCR3-DE" /FO list 2>NUL | findstr "TaskName Result State Next Last" >> sched_dpwin.log
 		SET OK=FALSE
 	)

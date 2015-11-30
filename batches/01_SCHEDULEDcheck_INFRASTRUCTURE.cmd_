@@ -51,13 +51,13 @@ IF %ERRORLEVEL% EQU 1 (
 )
 sc \\MLGMUC00APP290 query "Tomcat5" | findstr STATE | findstr RUNNING >nul 2>&1
 IF %ERRORLEVEL% EQU 1 (
-	sc \\MLGMUC00APP290 query "Tomcat5" > sched_infra.log
+	sc \\MLGMUC00APP290 query "Tomcat5" >> sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
 sc \\MLGMUC00APP290 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
 IF %ERRORLEVEL% EQU 1 (
-	sc \\MLGMUC00APP290 query "Schedule" > sched_infra.log
+	sc \\MLGMUC00APP290 query "Schedule" >> sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
