@@ -1,0 +1,167 @@
+ECHO off
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
+CLS
+
+REM *** MANDATORY Input Params...
+REM =========================================================================================================
+IF "%1"=="" GOTO ICC_MISS  
+IF "%2"=="" GOTO ICC_MISS  
+IF "%3"=="" GOTO ICC_MISS  
+SET HOST=%1
+SET CHECK=%2
+SET EXECID=%3
+
+
+REM *** MAXTIMEPROC - Minutes Max. Itens in Processing / MAXPERCERR - % Max. Errors in LOG Files (History)...
+REM =========================================================================================================
+SET MAXTIMEPROC=15
+SET MAXPERCERR=5
+
+
+REM *** SET AUX VARIABLES...
+REM =========================================================================================================
+SET SERVICE=tracing
+SET PROCESS=doku
+SET LOCALSR=dTrace
+
+SET EXEFILE=ICCcheckExec
+SET LOGFILE=@LOGFILE
+SET JARFILE=%EXEFILE%.jar
+SET LOGJARFILE=%EXEFILE%.%EXECID%.log
+SET TMPFILE=ICCcheck.tmp
+SET ZIPFILE=ICCcheck.7za.%EXECID%.zip
+
+SET TIMEWAIT=6
+SET MAXTIMES=10
+SET /A COUNTCHECKRESET=0
+
+
+REM *** SET Subdir Log...
+REM =========================================================================================================
+SET LOCALDIR=\Testes\MPS\ICClogs
+SET LOGSDIR=ICClogs
+REM If subdir not exists, create... 
+MD %LOGSDIR% 2>NUL 
+
+IF "%CHECK%"=="1" GOTO ICC16
+IF "%CHECK%"=="6" GOTO ICC16
+
+IF "%CHECK%"=="2" GOTO ICC27
+IF "%CHECK%"=="7" GOTO ICC27
+
+IF "%CHECK%"=="3" GOTO ICC38
+IF "%CHECK%"=="8" GOTO ICC38
+
+IF "%CHECK%"=="4" GOTO ICC49
+IF "%CHECK%"=="9" GOTO ICC49
+
+IF "%CHECK%"=="5" GOTO ICC510
+IF "%CHECK%"=="10" GOTO ICC510
+
+
+REM *** SET TYPES...
+REM =========================================================================================================
+:ICC16
+SET FILETYPE=ext
+SET USAGE=-x
+GOTO START
+
+:ICC27
+SET FILETYPE=ovw
+SET USAGE=-v
+GOTO START
+
+:ICC38
+SET FILETYPE=cln
+SET USAGE=-n
+GOTO START
+
+:ICC49
+SET FILETYPE=ops
+SET USAGE=-o
+GOTO START
+
+:ICC510
+SET FILETYPE=hst
+SET USAGE=-h
+GOTO START
+
+
+REM *** Start process...
+REM =========================================================================================================
+:START
+break > %LOGFILE%
+break > %LOGJARFILE%
+
+
+REM *** Move TMPFILE and try create errors of LOGs files, If some error, restart...
+REM =========================================================================================================
+:TMP_RESTART
+MOVE /Y %TMPFILE% %TMPFILE%.%EXECID%.!COUNTCHECKRESET! >> %LOGJARFILE%
+IF %COUNTCHECKRESET% GTR %MAXTIMES% GOTO ICC_ERR
+
+
+:TMP_USAGE
+REM *** Call External JAVA App to set Errors in checks Files... 
+REM *** If some error occur, restart from last check done...
+REM =========================================================================================================
+REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
+REM ---------------------------------------------------------------------------------------------------------
+ECHO ---------------------------------------------------------- 
+ECHO vars   = %EXEFILE% %LOGFILE% %JARFILE% %LOGJARFILE% %TMPFILE% %ZIPFILE%
+ECHO vars   = %LOGSDIR% %CHECK% %FILETYPE% %TIMEWAIT% %COUNTCHECKRESET%
+ECHO params = %HOST% %SERVICE% %PROCESS% %LOCALSR% %USAGE% %MAXTIMEPROC% %MAXPERCERR% %EXECID%
+ECHO ---------------------------------------------------------- 
+
+IF NOT EXIST %TMPFILE%.%HOST%.%EXECID%.%FILETYPE% (
+
+  SET /A COUNTCHECKRESET+=1
+  ECHO ------------------%HOST%-------------------------- 
+  ECHO params = %HOST% %SERVICE% %PROCESS% %LOCALSR% %USAGE% %MAXTIMEPROC% %MAXPERCERR% %EXECID%
+  ECHO ---------------------------------------------------------- 
+  java -jar %JARFILE% %HOST% %SERVICE% %PROCESS% %LOCALSR% %USAGE% %MAXTIMEPROC% %MAXPERCERR% %EXECID% >> %LOGJARFILE%
+
+  TIMEOUT /T %TIMEWAIT% /NOBREAK
+
+  IF EXIST %TMPFILE% GOTO TMP_RESTART
+
+)
+
+
+:WRITELOGFILE
+REM *** Write - File Types ICCcheckExec (ext, ovw, cln, ops, hst)...
+REM ---------------------------------------------------------------------------------------------------------
+ECHO ICC00%CHECK%
+ECHO ----------------------CHECKS------------------------------ >> %LOGFILE%
+ECHO ICC00%CHECK% >> %LOGFILE%
+ECHO ----------------------ERRORS------------------------------ >> %LOGFILE%
+SET OK=TRUE
+SET LINES=0
+
+FOR /F  %%A IN (%TMPFILE%.%HOST%.%EXECID%.%FILETYPE%) DO (SET /A LINES+=1)
+
+IF "!LINES!" EQU "0" (
+  ECHO OK
+) ELSE (
+  ECHO ERROR
+  TYPE %TMPFILE%.%HOST%.%EXECID%.%FILETYPE% >> %LOGFILE%
+  ECHO. >> %LOGFILE%
+)
+
+GOTO EOF
+
+
+
+:ICC_MISS
+ECHO ---------------------------------------------------------- 
+ECHO Missing Input Parameters, please enter HOST, CHECK (1-10), EXECID (RANDOM)!
+GOTO EOF
+
+
+:ICC_ERR
+ECHO ---------------------------------------------------------- 
+ECHO Timeout Expired! Please check - %LOGJARFILE%
+
+
+:EOF
+ECHO End of Check - %CHECK%! 
