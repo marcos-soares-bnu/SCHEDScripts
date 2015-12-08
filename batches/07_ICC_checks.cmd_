@@ -38,7 +38,6 @@ SET /A COUNTCHECKRESET=0
 
 REM *** SET Subdir Log...
 REM =========================================================================================================
-SET LOCALDIR=\Testes\MPS\ICClogs
 SET LOGSDIR=ICClogs
 REM If subdir not exists, create... 
 MD %LOGSDIR% 2>NUL 
@@ -105,8 +104,6 @@ IF %COUNTCHECKRESET% GTR %MAXTIMES% GOTO ICC_ERR
 REM *** Call External JAVA App to set Errors in checks Files... 
 REM *** If some error occur, restart from last check done...
 REM =========================================================================================================
-REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
-REM ---------------------------------------------------------------------------------------------------------
 ECHO ---------------------------------------------------------- 
 ECHO vars   = %EXEFILE% %LOGFILE% %JARFILE% %LOGJARFILE% %TMPFILE% %ZIPFILE%
 ECHO vars   = %LOGSDIR% %CHECK% %FILETYPE% %TIMEWAIT% %COUNTCHECKRESET%
@@ -148,7 +145,51 @@ IF "!LINES!" EQU "0" (
   ECHO. >> %LOGFILE%
 )
 
+
+IF "%CHECK%"=="5" GOTO ICC_ZIP
+IF "%CHECK%"=="10" GOTO ICC_ZIP
+
 GOTO EOF
+
+
+:ICC_ZIP
+REM *** ZIP/Move/Copy Files to check the executation...
+REM =========================================================================================================
+COPY /Y %LOGFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
+
+IF EXIST "7za.exe" (
+
+	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP019.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP041.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
+	7za.exe a -tzip %ZIPFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
+
+	DEL *.MLGMUC00SAP019.* >> %LOGJARFILE%
+	DEL *.MLGMUC00SAP041.* >> %LOGJARFILE%
+	DEL %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
+	DEL %LOGFILE%.%EXECID% >> %LOGJARFILE%
+	
+) ELSE (
+
+	MOVE /Y *.MLGMUC00SAP019.* .\%LOGSDIR% >> %LOGJARFILE%
+	MOVE /Y *.MLGMUC00SAP041.* .\%LOGSDIR% >> %LOGJARFILE%
+	MOVE /Y %TMPFILE%.%EXECID%.* .\%LOGSDIR% >> %LOGJARFILE%
+	MOVE /Y %LOGFILE%.%EXECID% .\%LOGSDIR% >> %LOGJARFILE%
+)
+
+IF EXIST "7za.exe" (
+
+	7za.exe a -tzip %ZIPFILE% %LOGJARFILE%
+	MOVE /Y %ZIPFILE% .\%LOGSDIR%
+	DEL %LOGJARFILE%
+
+) ELSE (
+
+	MOVE /Y %LOGJARFILE% .\%LOGSDIR%
+)
+GOTO EOF
+REM =========================================================================================================
+
 
 
 
