@@ -3,6 +3,8 @@ REM clear the screen
 cls
 REM reset the logfile
 break > sched_infra.log
+REM create a "execid"
+set EXECID=%RANDOM%
 
 REM =========================================================================================================
 ECHO MON001
@@ -51,13 +53,13 @@ IF %ERRORLEVEL% EQU 1 (
 )
 sc \\MLGMUC00APP290 query "Tomcat5" | findstr STATE | findstr RUNNING >nul 2>&1
 IF %ERRORLEVEL% EQU 1 (
-	sc \\MLGMUC00APP290 query "Tomcat5" >> sched_infra.log
+	sc \\MLGMUC00APP290 query "Tomcat5" > sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
 sc \\MLGMUC00APP290 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
 IF %ERRORLEVEL% EQU 1 (
-	sc \\MLGMUC00APP290 query "Schedule" >> sched_infra.log
+	sc \\MLGMUC00APP290 query "Schedule" > sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
@@ -323,7 +325,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 sc \\mlgmuc00app667 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
 IF %ERRORLEVEL% EQU 1 (
- 	sc \\mlgmuc00app667 query "Adlib FMR" 
+ 	sc \\mlgmuc00app667 query "Adlib FMR" >> sched_infra.log
  	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
  )
@@ -369,6 +371,92 @@ IF %ERRORLEVEL% EQU 1 (
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
+REM NEW Process CHECKS:
+pslist \\MLGMUC00APP667 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e ExponentManagerService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e Tomcat6 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP667 -e Tomcat6w 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+del check_DPWIN_%EXECID%.tmp
 IF "%OK%" EQU "TRUE" (
 	ECHO OK
 ) ELSE (
@@ -404,6 +492,71 @@ IF %ERRORLEVEL% EQU 1 (
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
+REM NEW Process CHECKS:
+pslist \\MLGMUC00APP664 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP664 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+del check_DPWIN_%EXECID%.tmp
 IF "%OK%" EQU "TRUE" (
 	ECHO OK
 ) ELSE (
@@ -439,6 +592,71 @@ IF %ERRORLEVEL% EQU 1 (
  	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
+REM NEW Process CHECKS:
+pslist \\MLGMUC00APP705 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+pslist \\MLGMUC00APP705 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP705 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+del check_DPWIN_%EXECID%.tmp
 IF "%OK%" EQU "TRUE" (
 	ECHO OK
 ) ELSE (
@@ -474,6 +692,71 @@ IF %ERRORLEVEL% EQU 1 (
  	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
 )
+REM NEW Process CHECKS:
+pslist \\MLGMUC00APP706 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+pslist \\MLGMUC00APP706 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp >> sched_infra.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+) 
+del check_DPWIN_%EXECID%.tmp
 IF "%OK%" EQU "TRUE" (
 	ECHO OK
 ) ELSE (
@@ -487,6 +770,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 spawncmd -h iasp.edc.linde.grp status | findstr /V /C:"chkw            T   0 " | findstr /V /C:"db              T   0 " | findstr /V /C:"dsstockist      T   0 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T " 
 IF %ERRORLEVEL% EQU 0 (
+	spawncmd -h iasp.edc.linde.grp status | findstr /V /C:"chkw            T   0 " | findstr /V /C:"db              T   0 " | findstr /V /C:"dsstockist      T   0 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T " >> sched_infra.log
 	ECHO SPAWNER ERROR >> sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
@@ -504,6 +788,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 spawncmd -h MLGMUC00APP289 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T "
 IF %ERRORLEVEL% EQU 0 (
+	spawncmd -h MLGMUC00APP289 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T " >> sched_infra.log
 	ECHO SPAWNER ERROR >> sched_infra.log
 	SET OK=FALSE
 	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
@@ -521,6 +806,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 spawncmd -h MLGMUC00APP290 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T "
 IF %ERRORLEVEL% EQU 0 (
+	spawncmd -h MLGMUC00APP290 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff      T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt     T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist        T   0 " | findstr /C:" T " >> sched_infra.log
 	ECHO SPAWNER ERROR >> sched_infra.log
 	SET OK=FALSE
 )
@@ -543,7 +829,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 ping 10.138.228.248 | findstr Packets | findstr /C:"Received = 0"
 IF %ERRORLEVEL% EQU 0 (
-	ECHO NETAPP ERROR >> sched_infra.log
+	ECHO NETAPP ERROR -- ping to 10.138.228.248 failed >> sched_infra.log
 	SET OK=FALSE
 )
 IF "%OK%" EQU "TRUE" (
@@ -559,7 +845,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_infra.l
 SET OK=TRUE
 ping 10.138.228.249 | findstr Packets | findstr /C:"Received = 0"
 IF %ERRORLEVEL% EQU 0 (
-	ECHO NETAPP ERROR >> sched_infra.log
+	ECHO NETAPP ERROR -- ping to 10.138.228.249 failed >> sched_infra.log
 	SET OK=FALSE
 )
 IF "%OK%" EQU "TRUE" (
@@ -610,7 +896,7 @@ dpctrl -dphost iasp.edc.linde.grp queues | findstr /V /C:" 0 " | findstr "error"
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
-dpctrl -dphost iasp.edc.linde.grp queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+dpctrl -dphost iasp.edc.linde.grp queues | findstr /V /I "error docrm" | findstr /r "[5-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
@@ -633,7 +919,7 @@ dpctrl -dphost MLGMUC00APP289 queues | findstr /V /C:" 0 " | findstr "error" >> 
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
-dpctrl -dphost MLGMUC00APP289 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+dpctrl -dphost MLGMUC00APP289 queues | findstr /V /I "error docrm" | findstr /r "[5-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
@@ -656,7 +942,7 @@ dpctrl -dphost MLGMUC00APP290 queues | findstr /V /C:" 0 " | findstr "error" >> 
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
-dpctrl -dphost MLGMUC00APP290 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+dpctrl -dphost MLGMUC00APP290 queues | findstr /V /I "error docrm" | findstr /r "[5-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 )
@@ -685,5 +971,255 @@ IF "%OK%" EQU "TRUE" (
 ) ELSE (
 	ECHO ERROR
 )
+REM =========================================================================================================
+ECHO MON001_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON001_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00APP730 query "spawner" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP730 query "spawner" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP730 query "Tomcat7" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP730 query "Tomcat7" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP730 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP730 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON002_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON002_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\MLGMUC00APP731 query "spawner" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP731 query "spawner" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP731 query "Tomcat7" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP731 query "Tomcat7" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\MLGMUC00APP731 query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\MLGMUC00APP731 query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON008_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON008_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\mlgmuc00app569 query "Adlib FMR" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+ 	sc \\mlgmuc00app569 query "Adlib FMR" >> sched_infra.log
+	sc \\mlgmuc00app569 query "Adlib FMR"
+ 	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+ )
+sc \\mlgmuc00app569 query "Exponent Connector Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "Exponent Connector Service" >> sched_infra.log
+	sc \\mlgmuc00app569 query "Exponent Connector Service"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app569 query "Exponent Manager Service" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "Exponent Manager Service" >> sched_infra.log
+	sc \\mlgmuc00app569 query "Exponent Manager Service"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app569 query "Adlib Process Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "Adlib Process Manager" >> sched_infra.log
+	sc \\mlgmuc00app569 query "Adlib Process Manager"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app569 query "Tomcat6" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "Tomcat6" >> sched_infra.log
+	sc \\mlgmuc00app569 query "Tomcat6"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app569 query "MSMQ" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "MSMQ" >> sched_infra.log
+	sc \\mlgmuc00app569 query "MSMQ"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app569 query "W3SVC" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app569 query "W3SVC" >> sched_infra.log
+	sc \\mlgmuc00app569 query "W3SVC"
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON013_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON013_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+spawncmd -h MLGMUC00APP730 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff     T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt       T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist          T   0 " | findstr /C:" T "
+IF %ERRORLEVEL% EQU 0 (
+   spawncmd -h MLGMUC00APP730 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff     T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt       T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist          T   0 " | findstr /C:" T " >> sched_infra.log
+   ECHO SPAWNER ERROR >> sched_infra.log
+   SET OK=FALSE
+   ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
 
+IF "%OK%" EQU "TRUE" (
+   ECHO OK
+) ELSE (
+  ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON014_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON014_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+spawncmd -h MLGMUC00APP731 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff     T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt       T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist          T   0 " | findstr /C:" T "
+IF %ERRORLEVEL% EQU 0 (
+   spawncmd -h MLGMUC00APP731 status | findstr /V /C:"ExR3start       T   1 " | findstr /V /C:"Tiff2Mtiff     T   1 " | findstr /V /C:"cfbx            T   1 " | findstr /V /C:"ocrdt_placeholder T   1 " | findstr /V /C:"timestampdt       T   1 " | findstr /V /C:"Exr3SsProt_ProtComIx1 T   1 " | findstr /V /C:"stockist          T   0 " | findstr /C:" T " >> sched_infra.log
+   ECHO SPAWNER ERROR >> sched_infra.log
+   SET OK=FALSE
+)
+
+IF "%OK%" EQU "TRUE" (
+   ECHO OK
+) ELSE (
+  ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON019_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON019_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+
+dpctrl -dphost MLGMUC00APP730 queues | findstr /V /C:" 0 " | findstr "error" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+dpctrl -dphost MLGMUC00APP730 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+dpctrl -dphost MLGMUC00APP730 tools | findstr disabled >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+IF "%OK%" EQU "TRUE" (
+   ECHO OK
+) ELSE (
+  ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON020_2
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON020_2 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+
+dpctrl -dphost MLGMUC00APP731 queues | findstr /V /C:" 0 " | findstr "error" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+dpctrl -dphost MLGMUC00APP731 queues | findstr /V /I "error docrm" | findstr /r "[0-9][0-9][0-9][0-9][0-9]*" >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+dpctrl -dphost MLGMUC00APP731 tools | findstr disabled >> sched_infra.log
+IF %ERRORLEVEL% EQU 0 (
+   SET OK=FALSE
+)
+
+IF "%OK%" EQU "TRUE" (
+   ECHO OK
+) ELSE (
+  ECHO ERROR
+)
+REM =======================================================================================
+ECHO MON023
+ECHO ----------------------CHECKS------------------------------ >> sched_infra.log
+ECHO MON023 >> sched_infra.log
+ECHO ----------------------ERRORS------------------------------ >> sched_infra.log
+SET OK=TRUE
+sc \\mlgmuc00app744  query "DOKuStar Load Manager" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app744  query "DOKuStar Load Manager" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app744  query "DOKuStar Tracing" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app744  query "DOKuStar Tracing" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app744  query "DOKuStar HotSpot" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app744  query "DOKuStar HotSpot" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app744  query "Invoice Capture Center SLD Data Supplier 7.5" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app744  query "Invoice Capture Center SLD Data Supplier 7.5" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+sc \\mlgmuc00app744  query "Schedule" | findstr STATE | findstr RUNNING >nul 2>&1
+IF %ERRORLEVEL% EQU 1 (
+	sc \\mlgmuc00app744  query "Schedule" >> sched_infra.log
+	SET OK=FALSE
+	ECHO ---------------------SUBERROR----------------------------- >> sched_infra.log
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
 exit

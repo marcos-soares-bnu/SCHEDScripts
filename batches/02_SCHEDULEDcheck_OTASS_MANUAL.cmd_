@@ -4,11 +4,11 @@ cls
 REM reset the logfile
 break > sched_otass.log
 
-IF "%~1" == "" GOTO OTASS_ERR_PARAM
-IF "%~2" == "" GOTO OTASS_ERR_PARAM
+REM IF "%~1" == "" GOTO OTASS_ERR_PARAM
+REM IF "%~2" == "" GOTO OTASS_ERR_PARAM
 
-SET USR=%1
-SET PWD=%2
+SET USR=ixosadm
+SET PWD=soxi0401
 SET HST=iasp.edc.linde.grp
 SET EXECID=%RANDOM%
 
@@ -187,7 +187,7 @@ ECHO ----------------------ERRORS------------------------------ >> sched_otass.l
 SET LINES=0
 SET CMDSH="netstat -an | grep CLOSE_WAIT | wc -l | grep \"[23456789][0123456789][0123456789][0123456789]*\""
 SET CMDSH1="netstat -an | grep CLOSE_WAIT"
-REM ECHO ERROR - Number of CLOSE_WAIT TCP/IP connections should by less than 100 > check_OTASS_%EXECID%.tmp
+REM ECHO ERROR - Number of CLOSE_WAIT TCP/IP connections should by less than 200 > check_OTASS_%EXECID%.tmp
 
 REM =====================================================================
 REM Errors Handling - File Compare with disabled_jobs_reference.txt
@@ -471,7 +471,7 @@ IF "%LINES%" EQU "0" (
 )
 
 ECHO ***     CALL APP AND WRITE LASTID ^(%SQL_LASTID2%^) INTO mySQL     ***
-java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar update %SQL_LASTID2%
+REM java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar update %SQL_LASTID2%
 
 
 

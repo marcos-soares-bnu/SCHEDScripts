@@ -321,9 +321,10 @@ ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.l
 ECHO DPWIN009 >> sched_dpwin.log
 ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
 SET OK=TRUE
-psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ExternalStorage 2>NUL | findstr ".sem" >> sched_dpwin.log
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ExternalStorage | findstr ".sem"
 IF %ERRORLEVEL% EQU 0 (
-	psexec \\MLGMUC00APP290 schtasks /Query /V /TN "enq_REN_ExtStor2Arch" /FO list 2>NUL | findstr "TaskName Result State Next Last" | findstr /I /C:"Last Result:                          267009"
+	psexec \\MLGMUC00APP290 schtasks /Query /V /TN "enq_REN_ExtStor2Arch" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+	findstr /I /C:"Last Result:                          267009" check_DPWIN_%EXECID%.tmp
 	IF %ERRORLEVEL% EQU 1 (
 		psexec \\MLGMUC00APP290 schtasks /Query /V /TN "enq_REN_ExtStor2Arch" /FO list 2>NUL | findstr "TaskName Result State Next Last" >> sched_dpwin.log
 		SET OK=FALSE
@@ -334,6 +335,47 @@ IF "%OK%" EQU "TRUE" (
 ) ELSE (
 	ECHO ERROR
 )
+REM =========================================================================================================
+ECHO DPWIN001_2
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN001_2 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+psexec \\MLGMUC00APP730 schtasks /Query /V /TN "enq_EXR3B_LEAP_LiMA_J4" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM =========================================================================================================
+ECHO DPWIN002_2
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN002_2 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+REM TODO
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+
 del check_DPWIN_%EXECID%.tmp
 
 exit
