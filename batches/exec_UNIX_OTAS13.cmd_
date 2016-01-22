@@ -1,0 +1,88 @@
+@ECHO OFF
+SETLOCAL ENABLEDELAYEDEXPANSION
+
+SET PWD=%1
+SET USRHST=%2
+SET CMDSH=%3
+SET LOGFILE=%4
+SET EXECID=%5
+
+REM Aspa dupla
+SET SEARCHTEXT=@qq
+SET REPLACETEXT="
+SET STRING=%CMDSH%
+SET MODIFIED=!STRING:%SEARCHTEXT%=%REPLACETEXT%!
+
+REM *********************************************************************
+SET CMDSH="OTASS_sql13_r1.sh_"
+SET LINES=0
+rem SET STATUS="STATUS : ERROR" 
+SET STATUS="STATUS : ERROR"
+
+ECHO ===================================================================== 
+ECHO --------------------------------------------------------------------- 
+ECHO INITIALIZATION - LINES=%LINES%
+ECHO EXEC PLINK - %CMDSH% - SQL JOB EXR3_RUK_ICC...
+
+REM =====================================================================
+REM Check if exits STATUS ERROR and print the lastExec of 'EXR3_RUK_ICC'
+REM =====================================================================
+PLINK.EXE -t -pw %PWD% %USRHST% -m %CMDSH% > check_OTASS_RUKICC_%EXECID%.tmp
+TYPE check_OTASS_RUKICC_%EXECID%.tmp | FINDSTR /V /C:"Profile for AS loaded" > check_OTASS_RUKICC_%EXECID%.tmp.aux 
+
+ECHO WRITE REP - CHANGE %STATUS% to IGNORED... 
+CALL replacer.cmd ERROR INFO check_OTASS_RUKICC_%EXECID%.tmp.aux check_OTASS_RUKICC_%EXECID%.tmp.rep  
+FINDSTR /C:%STATUS% check_OTASS_RUKICC_%EXECID%.tmp.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+ECHO CHECK IF EXISTS %STATUS% - LINES=%LINES%
+ECHO --------------------------------------------------------------------- 
+
+IF "%LINES%" EQU "1" (
+   GOTO FOUND_ERR
+) ELSE (
+   TYPE check_OTASS_RUKICC_%EXECID%.tmp.aux >> %LOGFILE%
+)
+
+
+GOTO END
+
+
+REM *********************************************************************
+:FOUND_ERR
+
+SET LINES=0
+SET SEARCH="(Address already in use)"
+
+ECHO --------------------------------------------------------------------- 
+ECHO FOUND_ERROR - LINES=%LINES%
+ECHO EXEC PLINK - !MODIFIED! - ANALYSE LOG EXR3_RUK_ICC...
+
+PLINK.EXE -t -pw %PWD% %USRHST% !MODIFIED! | FINDSTR /V /R /C:"^$" /C:"^\ *$" /c:"^\	*$" > check_OTASS_FERROR_%EXECID%.tmp.log
+
+REM Check the last 2 ERR log of Actual Date... 
+TYPE check_OTASS_FERROR_%EXECID%.tmp.log | FINDSTR /C:"ERR %DATE:~7,2%.%DATE:~4,2%.%DATE:~12,2% " > check_OTASS_FERROR_%EXECID%.tmp.aux
+tail.exe -2 check_OTASS_FERROR_%EXECID%.tmp.aux > check_OTASS_FERROR_%EXECID%.tmp
+
+REM Check if exists the message - (Address already in use)
+TYPE check_OTASS_FERROR_%EXECID%.tmp | FINDSTR /C:%SEARCH% > check_OTASS_FERROR_%EXECID%.tmp.aux
+
+FOR /F %%A IN (check_OTASS_FERROR_%EXECID%.tmp.aux) DO (SET /A LINES+=1)
+
+ECHO CHECK IF EXISTS %SEARCH% - LINES=%LINES%
+ECHO --------------------------------------------------------------------- 
+
+IF "%LINES%" EQU "1" (
+   TYPE check_OTASS_RUKICC_%EXECID%.tmp.rep >> %LOGFILE%
+) ELSE (
+   TYPE check_OTASS_RUKICC_%EXECID%.tmp.aux >> %LOGFILE%
+)
+
+REM *********************************************************************
+:END
+ECHO END - exec_UNIX_OTASS13.cmd!
+ECHO ===================================================================== 
+rem DEL check_OTASS_*%EXECID%.tmp
+rem DEL check_OTASS_*%EXECID%.tmp.aux
+

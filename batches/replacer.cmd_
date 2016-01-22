@@ -1,0 +1,13 @@
+@ECHO OFF
+SET FIND=%1
+SET REPL=%2
+SET INPF=%3
+SET OUTF=%4
+
+setLocal EnableDelayedExpansion
+For /f "tokens=* delims= " %%a in (%INPF%) do (
+Set str=%%a
+set str=!str:%FIND%=%REPL%!
+echo !str!>>%OUTF%
+)
+ENDLOCAL

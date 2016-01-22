@@ -1,0 +1,46 @@
+@ECHO OFF
+
+SET SQL_LASTID=%1 
+SET WHERE=%~2
+SET SQLNAMESH=%3
+
+ECHO ===================================================================== 
+ECHO WRITE SQL - %SQLNAMESH%  
+ECHO ===================================================================== 
+
+:MPS_WRITE_SQL_WITH_SQL_LASTID
+REM =====================================================================
+REM WRITE SQL WITH SHELL SCRIPT COMMANDS TO SELECT JOB ERROS+SQL_LASTID
+REM =====================================================================
+REM
+ECHO . /ixos/system/OTASS_971/bin/profile > %SQLNAMESH%
+ECHO # --- SQL JOB WITH ERROR --- >> %SQLNAMESH%
+ECHO sqlplus -s ecr_monitoring/ecr0401_monitoring@ECR_iasp ^<^< EOF >> %SQLNAMESH%
+ECHO SET SERVEROUTPUT ON >> %SQLNAMESH%
+ECHO SET FEEDBACK OFF >> %SQLNAMESH%
+ECHO BEGIN >> %SQLNAMESH%
+ECHO    -- Open the cursor and loop through the records >> %SQLNAMESH%
+ECHO    FOR v_rec IN ( >> %SQLNAMESH%
+ECHO 		 SELECT   JOBNAME >> %SQLNAMESH%
+ECHO 			^, ID >> %SQLNAMESH%
+ECHO 			^, STAT >> %SQLNAMESH%
+ECHO 			^, CAST (   from_tz (to_timestamp ('19700101000000', 'YYYYMMDDHH24MISS') >> %SQLNAMESH%
+ECHO 				 ^+ numtodsinterval(TIME ,'second'),'UTC') at time zone 'CET' as timestamp >> %SQLNAMESH%
+ECHO 			       ) TIME_CET >> %SQLNAMESH%
+ECHO 			^, MESSAGE >> %SQLNAMESH%
+ECHO 		   FROM ECR.ADM_JOB_PROTOCOL >> %SQLNAMESH%
+ECHO 		  WHERE ID ^> %SQL_LASTID% >> %SQLNAMESH% 
+ECHO 		    %WHERE% >> %SQLNAMESH% 
+ECHO 		  ORDER BY ID >> %SQLNAMESH%
+ECHO 		^) LOOP >> %SQLNAMESH%
+ECHO    -- Print the values >> %SQLNAMESH%
+ECHO    dbms_output.put_line^('JOBNAME: ' ^|^| v_rec.JOBNAME); >> %SQLNAMESH%
+ECHO    dbms_output.put_line^('ID     : ' ^|^| v_rec.ID); >> %SQLNAMESH%
+ECHO    dbms_output.put_line^('STATUS : ' ^|^| v_rec.STAT); >> %SQLNAMESH%
+ECHO    dbms_output.put_line^('TIME   : ' ^|^| v_rec.TIME_CET); >> %SQLNAMESH%
+ECHO    dbms_output.put_line^('MESSAGE: ' ^|^| v_rec.MESSAGE); >> %SQLNAMESH%
+ECHO    END LOOP; >> %SQLNAMESH%
+ECHO END; >> %SQLNAMESH%
+ECHO ^/ >> %SQLNAMESH%
+ECHO EXIT >> %SQLNAMESH%
+ECHO EOF >> %SQLNAMESH%

@@ -1,0 +1,129 @@
+ECHO off
+REM clear the screen
+cls
+REM reset the logfile
+break > sched_otass.log
+
+IF "%~1" == "" GOTO OTASS_ERR_PARAM
+IF "%~2" == "" GOTO OTASS_ERR_PARAM
+
+SET USR=%1
+SET PWD=%2
+SET HST=iasp.edc.linde.grp
+SET EXECID=%RANDOM%
+
+REM =========================================================================================================
+REM cd /ixos/ext_dir/TSY-scripts/ (Reference Path)
+REM =========================================================================================================
+
+REM GOTO MPS_TEST_DEBUG
+
+:MPS_TEST_DEBUG13
+REM =========================================================================================================
+ECHO OTASS013
+ECHO ----------------------CHECKS------------------------------ >> sched_otass.log
+ECHO OTASS013 >> sched_otass.log 
+ECHO ----------------------ERRORS------------------------------ >> sched_otass.log
+
+REM =====================================================================
+REM GET LAST ID - call JAR to GET from mySQL
+REM =====================================================================
+java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar select > check_OTASS_%EXECID%.aux
+SET /P SQL_LASTID=<check_OTASS_%EXECID%.aux
+
+REM =====================================================================
+REM GET LAST ID - call SQL to GET from UNIX
+REM =====================================================================
+SET LINES=0
+SET CMDSH="OTASS_sql13_id.sh_"
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% > check_OTASS_%EXECID%.tmp
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "1" (
+	SET /P SQL_LASTID2=<check_OTASS_%EXECID%.tmp
+)
+
+REM =====================================================================
+REM GET MAX ID (EXR3_RUK_ICC) - call SQL to GET from UNIX
+REM =====================================================================
+SET LINES=0
+SET CMDSH="OTASS_sql13_idRUK.sh_"
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% > check_OTASS_%EXECID%.tmp
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+
+FOR /F %%A IN (check_OTASS_%EXECID%.tmp) DO (SET /A LINES+=1)
+
+IF "%LINES%" EQU "1" (
+	SET /P SQL_MAXIDRUK=<check_OTASS_%EXECID%.tmp
+)
+
+ECHO ===================================================================== 
+ECHO SQL_LASTID_MySQL=%SQL_LASTID%
+ECHO SQL_LASTID2_UNIX=%SQL_LASTID2%
+ECHO SQL_MAXIDRUK_UNIX=%SQL_MAXIDRUK%
+ECHO ===================================================================== 
+
+
+REM =====================================================================
+REM WRITE SQL WITH SHELL SCRIPT COMMANDS TO SELECT JOB ERROS+SQL_LASTID
+REM WRITE_SQL_WITH_SQL_LASTID - CALL EXTERN...
+REM =====================================================================
+CALL OTASS013_WRITE_SQL_WITH_SQL_LASTID.cmd %SQL_LASTID% "AND JOBNAME NOT LIKE 'EXR3_RUK_ICC'" OTASS_sql13_r.sh_  
+CALL OTASS013_WRITE_SQL_WITH_SQL_LASTID.cmd 0 "AND JOBNAME LIKE 'EXR3_RUK_ICC' AND ID = %SQL_MAXIDRUK%" OTASS_sql13_r1.sh_  
+
+
+REM =====================================================================
+REM NEW! - Check for the JOB = EXR3_RUK_ICC WITH ERROR TO IGNORE... 
+REM =====================================================================
+CALL exec_UNIX_OTAS13.cmd %PWD% %USR%@%HST% "cat /ixos/system/var/log/Enque_LINDE_EXR3_RUK.log | grep -e @qqIMP@qq -e @qqFTL@qq -e @qqERR@qq" sched_otass.log %EXECID%
+
+
+REM =====================================================================
+REM Errors Handling - List JOBs <> JOB EXR3_RUK_ICC and ID > %SQL_LASTID% 
+REM =====================================================================
+SET CMDSH="OTASS_sql13_r.sh_"
+
+PLINK.EXE -t -pw %PWD% %USR%@%HST% -m %CMDSH% > check_OTASS_%EXECID%.tmp
+FINDSTR /V "Profile" check_OTASS_%EXECID%.tmp > check_OTASS_%EXECID%.aux
+FINDSTR /V "^$" check_OTASS_%EXECID%.aux > check_OTASS_%EXECID%.tmp
+TYPE check_OTASS_%EXECID%.tmp >> sched_otass.log
+
+
+REM =====================================================================
+REM SET LAST ID - call JAR to SET to mySQL (%SQL_LASTID2%)
+REM =====================================================================
+ECHO ===================================================================== 
+ECHO UPDATE LASTID_mySQL - %SQL_LASTID2% 
+rem java -jar D:\IAS_Monitoring\APP_Dev\SCHEDScripts\OTASSLastID.jar update %SQL_LASTID2%
+ECHO ===================================================================== 
+
+
+REM =====================================================================
+REM End of Script.
+REM =====================================================================
+
+rem del check_OTASS_%EXECID%.tmp
+rem del check_OTASS_%EXECID%.aux
+GOTO OTASS_END
+
+
+:OTASS_ERR_PARAM
+ECHO Invalid argument, please enter 02_.CMD [USR] [PWD]!
+ECHO Invalid argument, please enter 02_.CMD [USR] [PWD]! > sched_otass.log
+GOTO OTASS_END
+
+
+:OTASS_ERR_CONN
+ECHO Invalid User/Password, please enter a correct 02_.CMD [USR] [PWD]!
+ECHO Invalid User/Password, please enter a correct 02_.CMD [USR] [PWD]! > sched_otass.log
+GOTO OTASS_END
+
+
+:OTASS_END
+rem exit
