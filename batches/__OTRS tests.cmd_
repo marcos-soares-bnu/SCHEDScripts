@@ -1,0 +1,273 @@
+ECHO off
+REM clear the screen
+cls
+REM create a "execid"
+set EXECID=%RANDOM%
+
+ECHO =================== MASTER: MLGMUC00APP667 ===================
+SET OK=TRUE
+pslist \\MLGMUC00APP667 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e ExponentManagerService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e Tomcat6 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP667 -e Tomcat6w 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+ECHO =================== NODE: MLGMUC00APP664 ===================
+SET OK=TRUE
+pslist \\MLGMUC00APP664 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP664 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+ECHO =================== NODE: MLGMUC00APP705 ===================
+SET OK=TRUE
+pslist \\MLGMUC00APP705 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+)
+pslist \\MLGMUC00APP705 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP705 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+
+ECHO =================== NODE: MLGMUC00APP706 ===================
+SET OK=TRUE
+pslist \\MLGMUC00APP706 -e AdConv 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e adexps 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e Adlib.ProcessManager.Service 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e AdlibFMR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e AdlibOCR 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e AdlibPDF 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e ExponentConnectorService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e FNPLicensingService 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+pslist \\MLGMUC00APP706 -e mqsvc 2>NUL | findstr "was not found" > check_DPWIN_%EXECID%.tmp 
+type check_DPWIN_%EXECID%.tmp | findstr "was not found" > NUL
+IF %ERRORLEVEL% EQU 0 (
+	SET OK=FALSE
+	type check_DPWIN_%EXECID%.tmp
+) 
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+
+del check_DPWIN_%EXECID%.tmp
+pause
+exit

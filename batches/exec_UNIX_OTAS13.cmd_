@@ -16,7 +16,6 @@ SET MODIFIED=!STRING:%SEARCHTEXT%=%REPLACETEXT%!
 REM *********************************************************************
 SET CMDSH="OTASS_sql13_r1.sh_"
 SET LINES=0
-rem SET STATUS="STATUS : ERROR" 
 SET STATUS="STATUS : ERROR"
 
 ECHO ===================================================================== 
@@ -83,6 +82,7 @@ REM *********************************************************************
 :END
 ECHO END - exec_UNIX_OTASS13.cmd!
 ECHO ===================================================================== 
-rem DEL check_OTASS_*%EXECID%.tmp
-rem DEL check_OTASS_*%EXECID%.tmp.aux
-
+ECHO ===================================================================== 
+ECHO DELETING check_OTASS_*%EXECID%.tmp*...  
+DEL check_OTASS_*%EXECID%.tmp*
+ECHO ===================================================================== 

@@ -38,7 +38,7 @@ IF ERRORLEVEL 1 (
 	type check_FCIR_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
 	IF ERRORLEVEL 1 (
 		SET OK=FALSE
-		ECHO ERROR - Check last result value of this scheduled task: sched_fcir.log
+		ECHO ERROR - Check last result value of this scheduled task: >> sched_fcir.log
 	)
 )
 IF "%OK%" EQU "TRUE" (
@@ -150,52 +150,52 @@ IF "%dd:~0,1%"=="0" SET dd=%dd:~1%
 IF "%mm:~0,1%"=="0" SET mm=%mm:~1%
 
 SET OK=TRUE
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_amr_1.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_amr_1.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_amr_1.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_amr_1.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_del.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_del.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_del.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_del.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_exf.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_exf.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_exf.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_exf.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_fzy.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_fzy.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_fzy.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_fzy.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_hdr_1.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_hdr_1.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_hdr_1.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_hdr_1.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_ias.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_ias.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
 	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_ias.log >> sched_fcir.log
@@ -204,56 +204,56 @@ IF %ERRORLEVEL% EQU 0 (
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_imf.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_imf.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_imf.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_imf.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_kbl.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" | findstr /V /I "Warning getimage -1" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_kbl.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" | findstr /V /I "Warning getimage -1" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_kbl.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_kbl.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_multi.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_multi.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_multi.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_multi.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pgr_1.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pgr_1.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pgr_1.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pgr_1.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
 REM For IX_PJV.LOG only check for Error, because Warning occurs quite often.
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pjv.log | findstr "Error" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pjv.log | findstr "Error" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pjv.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_pjv.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 	ECHO ---------------------SUBERROR----------------------------- >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
 REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
-tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_spr_1.log | findstr "Error Warning" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
+tail -50 \\mlgmuc00app577\e$\OCR\Log\FCI\ix_spr_1.log | findstr "Error Warning" | findstr /V /C:"has no entries (condition allowed)" | findstr /C:"%mm%/%dd%/%yyyy%" > check_FCIR_%EXECID%.tmp
 IF %ERRORLEVEL% EQU 0 (
 	SET OK=FALSE
-	echo ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_spr_1.log >> sched_fcir.log
+	ECHO ERROR/WARNING FOUND IN \\mlgmuc00app577\e$\OCR\Log\FCI\ix_spr_1.log
 	type check_FCIR_%EXECID%.tmp >> sched_fcir.log
 )
 del check_FCIR_%EXECID%.tmp
@@ -311,7 +311,7 @@ IF "%LINES%" EQU "0" (
 
 :MPS_TEST_DEBUG6
 REM =========================================================================================================
-ECHO FCIR006
+REM ECHO FCIR006
 ECHO ----------------------CHECKS------------------------------ >> %LOGFILE%
 ECHO FCIR006 >> %LOGFILE%
 ECHO ----------------------ERRORS------------------------------ >> %LOGFILE%

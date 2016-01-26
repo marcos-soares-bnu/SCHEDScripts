@@ -23,7 +23,7 @@ BEGIN
 						   , compsname) 
 			   AND    poolname = DSPOOLNAME 
 		      GROUP BY    poolname) 
-		  WHERE (pending_MB/writemin_MB) > 2.5 -- 2.5 
+		  WHERE (pending_MB/writemin_MB) > 2.5
 		    AND writemin_MB > 0
 		) LOOP 
    -- Print the values 
@@ -33,3 +33,4 @@ END;
 / 
 EXIT 
 EOF 
+

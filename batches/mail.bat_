@@ -1,0 +1,10 @@
+echo @ECHO OFF> C:\Temp\mail.bat
+echo SET MAIL="<?xml version=\"1.0\" encoding=\"UTF-8\"?><DSCEMO><EVTYPE>DSCEMO</EVTYPE><CONTACT_NAME>DUMMY-USER-LINDE</CONTACT_NAME><PROBLEM_MSS>1000.0002.0004</PROBLEM_MSS><ASSIGNMENT>SI.DHS.INT.LINDE_IAS_AO_1ST</ASSIGNMENT><LOGICAL_NAME>LINDE_IAS_OTASS_PRODUCTION</LOGICAL_NAME><BRIEF_DESCRIPTION>P2 \ LINDE \ OTASS \ OTASS009 - Job Scheduler error</BRIEF_DESCRIPTION><ACTION>couldn't connect to host|Can't connect to http://localhost:8080/archive/admin</ACTION></DSCEMO>">> C:\Temp\mail.bat
+echo SET MAIL_TITLE="LINDE \ OTASS \ OTASS009 - Job Scheduler error">> C:\Temp\mail.bat
+echo SET Returncode=0>> C:\Temp\mail.bat
+echo SET mail_progr=C:/Users/SRSK0006/Desktop/sendEmail.exe>> C:\Temp\mail.bat
+echo SET mail_server=smtpeu.linde.grp>> C:\Temp\mail.bat
+echo SET mail_sender=ixos-admin@Linde-DCM.com>> C:\Temp\mail.bat
+echo SET mail_target=IncidentMailService@t-systems.com>> C:\Temp\mail.bat
+echo SET mail_target_cc=FMB-ECM-BR@t-systems.com.br>> C:\Temp\mail.bat
+echo "%%mail_progr%%" -f "%%mail_sender%%" -t "%%mail_target%%" -cc "%%mail_target_cc%%" -u %%MAIL_TITLE%% -m %%MAIL%% -s "%%mail_server%%">> C:\Temp\mail.bat

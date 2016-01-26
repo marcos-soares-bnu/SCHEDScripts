@@ -3,11 +3,13 @@ Compress_CJ_CJ
 Compress_DJ_DJ
 Compress_FJ_FJ
 Compress_HJ_HJ
+Compress_JJ_JJ
 Compress_KJ_KJ
 Compress_LJ_LJ
 Compress_M0_M0
 Compress_NJ_NJ
 Compress_O0117O0105_O0117O0105
+Compress_RJ_RJ
 Compress_Storm_Statistics
 Compress_TA_TA
 Compress_UJ_UJ

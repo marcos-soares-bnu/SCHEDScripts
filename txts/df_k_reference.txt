@@ -1,3 +1,4 @@
+/aha
 /dev/ITM6_lv
 /dev/hd1
 /dev/hd10opt
@@ -30,11 +31,12 @@
 /dev/lv_ixstormbck
 /dev/lv_ixsystem
 /dev/lv_ixtega
+/dev/lv_ixwm
 /dev/lv_ixww
 /dev/openv_lv
 /proc
 MLGMUC00DAT037:/vol/ixos01_BOC_P2E
-MLGMUC00DAT037:/vol/ixos01_BOC_P8E
+MLGMUC00DAT037:/vol/ixos01_BOC_P6E
 MLGMUC00DAT037:/vol/ixos01_BOC_PBE
 MLGMUC00DAT037:/vol/ixos01_BOC_PGH
 MLGMUC00DAT037:/vol/ixos01_BOC_PRD
@@ -81,7 +83,7 @@ MLGMUC00DAT037:/vol/ixos01_VitalAir_PRD
 MLGMUC00DAT037:/vol/ixos01_Vn
 MLGMUC00DAT037:/vol/ixos01_WW
 MLGMUC00DAT038:/vol/ixos02_BOC_P2E
-MLGMUC00DAT038:/vol/ixos02_BOC_P8E
+MLGMUC00DAT038:/vol/ixos02_BOC_P6E
 MLGMUC00DAT038:/vol/ixos02_BOC_PBE
 MLGMUC00DAT038:/vol/ixos02_BOC_PGH
 MLGMUC00DAT038:/vol/ixos02_BOC_PRD
@@ -130,4 +132,4 @@ MLGMUC00DAT038:/vol/ixos02_WW
 nfs-sap:/vol/LINDE354815501/LINDE3548_SAP_sapmnt
 nfs-sap:/vol/LINDE354815501/LINDE3548_SAP_sapmnt/xchg/GPA/linde/EDI/TRANSFER/GPA
 nfs-sap:/vol/LINDE354815501/LINDE3548_SAP_sapmnt/xchg/StreamServe
-nfs-sat:/vol/LINDE354815601/LINDE3548_SAT_sapmnt/
+nfs-sat:/vol/LINDE354815601/LINDE3548_SAT_sapmnt

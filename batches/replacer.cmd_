@@ -1,3 +1,7 @@
+REM =====================================================================
+REM UTILITARIO AUXILIAR PARA TROCAR A STRING DO STATUS ERROR PARA INFO NO
+REM CHECK DO OTASS013 NA VERIFICACAO DO JOB EXR3_RUK_ICC
+REM =====================================================================
 @ECHO OFF
 SET FIND=%1
 SET REPL=%2

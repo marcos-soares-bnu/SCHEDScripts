@@ -1,0 +1,372 @@
+ECHO off
+REM clear the screen
+cls
+REM reset the logfile
+break > sched_dpwin.log
+
+REM set date
+for /f "tokens=1-4 delims=/ " %%a in ('date /t') do (
+set day=%%a
+set mm=%%b
+set dd=%%c
+set yyyy=%%d)
+
+REM set time
+for /f "tokens=1-3 delims=: " %%a in ('time /t') do (
+set hour=%%a
+set minute=%%b
+set ampm=%%c)
+
+REM create a "execid"
+set EXECID=%RANDOM%
+set "CHECKNAME=%~nx0"
+
+REM =========================================================================================================
+ECHO DPWIN001
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN001 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+psexec \\MLGMUC00APP289 schtasks /Query /V /TN "Check DP doctools" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+psexec \\MLGMUC00APP289 schtasks /Query /V /TN "Directory_Cleaning" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+psexec \\MLGMUC00APP289 schtasks /Query /V /TN "enq_HC_SCR3-DE" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM =========================================================================================================
+
+ECHO DPWIN002
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN002 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+schtasks /query /v /tn Check_DP_doctools /fo LIST /s MLGMUC00APP290 /u linde\srlgde0009 /p epScan07 | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+schtasks /query /v /tn Directory_Cleaning /fo LIST /s MLGMUC00APP290 /u linde\srlgde0009 /p epScan07 | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+schtasks /query /v /tn enq_REN_ExtStor2Arch /fo LIST /s MLGMUC00APP290 /u linde\srlgde0009 /p epScan07  | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM =========================================================================================================
+ECHO DPWIN006
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN006 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+SET FILECHECK="hc_scanning.pl.sem"
+
+dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr %FILECHECK% >NUL
+IF %ERRORLEVEL% EQU 0 (
+	psexec \\MLGMUC00APP289 schtasks /Query /V /TN "enq_HC_SCR3-DE" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+	findstr /I /C:"Last Result:                          267009" check_DPWIN_%EXECID%.tmp
+	IF %ERRORLEVEL% EQU 0 (
+		psexec \\MLGMUC00APP289 cmd /c "date /t & time /t" 2>NUL >> sched_dpwin.log
+		ECHO ----------------------CONFIG------------------------------ >> sched_dpwin.log
+		dir \\MLGMUC00APP289\E$\var\LogDir\ | findstr %FILECHECK% >> sched_dpwin.log
+		psexec \\MLGMUC00APP289 schtasks /Query /V /TN "enq_HC_SCR3-DE" /FO list 2>NUL | findstr "TaskName Result State Next Last" >> sched_dpwin.log
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO DPWIN007
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN007 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+
+SET ERROCHECK = FALSE
+
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGRENEE1109963\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" > check_DPWIN_%EXECID%.tmp
+IF %ERRORLEVEL% EQU 0 (
+	SET ERROCHECK = TRUE
+)
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGEEOD11237\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" > check_DPWIN_%EXECID%.tmp
+IF %ERRORLEVEL% EQU 0 (
+	SET ERROCHECK = TRUE
+)
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGRENEE117229\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" > check_DPWIN_%EXECID%.tmp
+IF %ERRORLEVEL% EQU 0 (
+	SET ERROCHECK = TRUE
+)
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGEEOD1806C\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" > check_DPWIN_%EXECID%.tmp
+IF %ERRORLEVEL% EQU 0 (
+	SET ERROCHECK = TRUE
+)
+psexec \\MLGMUC00APP290 cmd /c dir /S e:\extdir\ExternalStorage 2>NUL | findstr /I "none /" | findstr /I /V  "ESDesc.txt" | findstr /V /C:"<DIR>" > check_DPWIN_%EXECID%.tmp
+IF %ERRORLEVEL% EQU 0 (
+	SET ERROCHECK = TRUE
+)
+
+IF "%ERROCHECK%" EQU "TRUE" (
+	psexec \\MLGMUC00APP290 cmd /c "date /t & time /t" 2>NUL >> sched_dpwin.log
+	ECHO ----------------------CONFIG------------------------------ >> sched_dpwin.log
+	psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGRENEE1109963\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" >> sched_dpwin.log 
+	psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGEEOD11237\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" >> sched_dpwin.log
+	psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGRENEE117229\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" >> sched_dpwin.log
+	psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ScanClients\WLGEEOD1806C\zips 2>NUL | findstr \/ | findstr /V /C:"<DIR>" >> sched_dpwin.log
+	psexec \\MLGMUC00APP290 cmd /c dir /S e:\extdir\ExternalStorage 2>NUL | findstr /I "none /" | findstr /I /V  "ESDesc.txt" | findstr /V /C:"<DIR>" >> sched_dpwin.log
+	tail -5 check_DPWIN_%EXECID%.tmp >> sched_dpwin.log >> sched_dpwin.log
+	ECHO ERROR
+) ELSE (
+	ECHO OK
+)
+
+ECHO Handle by .jar
+REM =========================================================================================================
+ECHO DPWIN009
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN009 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+psexec \\MLGMUC00APP290 cmd /c dir e:\extdir\ExternalStorage | findstr ".sem"
+IF %ERRORLEVEL% EQU 0 (
+	psexec \\MLGMUC00APP290 schtasks /Query /V /TN "enq_REN_ExtStor2Arch" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+	findstr /I /C:"Last Result:                          267009" check_DPWIN_%EXECID%.tmp
+	IF %ERRORLEVEL% EQU 1 (
+		psexec \\MLGMUC00APP290 schtasks /Query /V /TN "enq_REN_ExtStor2Arch" /FO list 2>NUL | findstr "TaskName Result State Next Last" >> sched_dpwin.log
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM =========================================================================================================
+ECHO DPWIN001_2
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN001_2 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+SET OK=TRUE
+psexec \\MLGMUC00APP730 schtasks /Query /V /TN "enq_EXR3B_LEAP_LiMA_J4" /FO list 2>NUL | findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM =========================================================================================================
+ECHO DPWIN002_2
+ECHO ----------------------CHECKS------------------------------ >> sched_dpwin.log
+ECHO DPWIN002_2 >> sched_dpwin.log
+ECHO ----------------------ERRORS------------------------------ >> sched_dpwin.log
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+schtasks /query /v /tn enq_EXR3_RNA /fo LIST /s MLGMUC00APP731 /u linde\srlgde0009 /p epScan07| findstr "TaskName Result State Next Last" > check_DPWIN_%EXECID%.tmp
+type check_DPWIN_%EXECID%.tmp | findstr "Enabled" > NUL
+IF ERRORLEVEL 1 (
+	SET OK=FALSE
+)
+type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          0" > NUL
+IF ERRORLEVEL 1 (
+	type check_DPWIN_%EXECID%.tmp | findstr /C:"Last Result:                          267009" > NUL
+	IF ERRORLEVEL 1 (
+		SET OK=FALSE
+	)
+)
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+	type check_DPWIN_%EXECID%.tmp  >> sched_dpwin.log
+	ECHO ---------------------SUBERROR----------------------------- >> sched_dpwin.log
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+SET OK=TRUE
+type \\MLGMUC00APP731\e$\var\LogDir\Enq_EXR3_RNA.txt | findstr "Returncode of Enqueext:" | findstr /V /I "D:\Program Files\Opentext\BASE Document Pipeline 9.7.1\bin" | findstr /V /I "Directory of \\mlgewr00kfax10\POD_forIXOS\IASP\extdir" > check_DPWIN_%EXECID%.tmp
+	set LINES=0
+	ECHO ------------------LOGIC-SWITCH---------------------------- >> sched_dpwin.log
+	for /f "delims==" %%I in (check_DPWIN_%EXECID%.tmp) do (
+    	set /a LINES=LINES+1
+	)
+	set /a LINES=LINES-6
+	if %%a GEQ 10 (
+		more +%LINES% < check_DPWIN_%EXECID%.tmp
+	) else (
+		ECHO OK 
+	)
+	set contador=0
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 1 ( 
+		if %%a EQU 1 (
+			ECHO ERROR 1 - no need for this DocTool >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 2 (
+		if %%a EQU 2 ( 
+			ECHO ERROR 2 - document cannot be enqueued >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 3 (
+		if %%a EQU 3 ( 
+			ECHO ERROR 3 - timeout while saying 'hello' to DP >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 4 (
+		if %%a EQU 4 ( 
+			ECHO ERROR 4 - cannot open dir EXTDIR\IAS\extdir failed error No such file or directory >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 5 (
+		if %%a EQU 5 ( 
+			ECHO ERROR 5 - logfile cannot be removed >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 6 (
+		if %%a EQU 6 ( 
+			ECHO ERROR 6 - protocol file cannot be opened >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 7 (
+		if %%a EQU 7 ( 
+			ECHO ERROR 7 - ext_dir is not defined >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a EQU 9 (
+		if %%a EQU 9 ( 
+			ECHO ERROR 9 - other error not covered by the other error codes >> sched_dpwin.log
+		)
+	)
+	FOR /f "skip=%LINES% tokens=2 delims= " %%a IN (check_DPWIN_%EXECID%.tmp) DO IF %%a LSS 10 (
+		if %%contador LSS 10 ( 
+			SET OK=FALSE
+		) else (
+			set /a contador=contador+1 
+		)
+	)
+ 	del check_DPWIN_%EXECID%.tmp
+IF "%OK%" EQU "TRUE" (
+	ECHO OK
+) ELSE (
+	ECHO ERROR
+)
+REM XXXXXXXXXXXXXXX------------XXXXXXXXXXXX
+
+del check_DPWIN_%EXECID%.tmp
+
+exit

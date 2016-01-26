@@ -78,3 +78,5 @@ netapp_HC_P2E
 netapp_HC_P2E_bck
 netapp_RSP
 netapp_RSP_bck
+netapp_BOC_P6E
+netapp_BOC_P6E_bck
