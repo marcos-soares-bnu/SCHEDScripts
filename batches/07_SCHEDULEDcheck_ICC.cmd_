@@ -1,250 +1,62 @@
-ECHO off
-CLS
-
-SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
-REM *** MAXTIMEPROC - Minutes Max. Itens in Processing / MAXPERCERR - % Max. Errors in LOG Files (History)...
-REM ---------------------------------------------------------------------------------------------------------
-SET MAXTIMEPROC=15
-SET MAXPERCERR=5
-REM ---------------------------------------------------------------------------------------------------------
-
-REM ---------------------------------------------------------------------------------------------------------
-SET EXECID=%RANDOM%
-SET /A COUNT=0
-SET /A COUNTRESET=0
-SET TIMEWAIT=6
-REM ---------------------------------------------------------------------------------------------------------
-
-REM ---------------------------------------------------------------------------------------------------------
-SET EXEFILE=ICCcheckExec
-SET LOGFILE=sched_icc.log
-SET JARFILE=%EXEFILE%.jar
-SET LOGJARFILE=%EXEFILE%.%EXECID%.log
-SET TMPFILE=ICCcheck.tmp
-SET ZIPFILE=ICCcheck.7za.%EXECID%.zip
-REM ---------------------------------------------------------------------------------------------------------
-
-REM *** SET AGE OF LOGFILE - Updatetime must be GTR to TIMEEXECMIN, else GOTO END...
-REM ---------------------------------------------------------------------------------------------------------
-SET TIMEEXECMIN=30
-@FOR /F "tokens=*" %%I IN ('icc_util_fileage_min.cmd %LOGFILE%') DO SET AGELOGFILE=%%I
-
-IF %AGELOGFILE% LEQ %TIMEEXECMIN% (
-	ECHO %LOGFILE% has only %AGELOGFILE% min of Age...
-	GOTO ICC_END
-)
-REM ---------------------------------------------------------------------------------------------------------
-
-REM ---------------------------------------------------------------------------------------------------------
+@ECHO OFF
 SET HOST=MLGMUC00SAP019
-SET SERVICE=tracing
-SET PROCESS=doku
-SET LOCALSR=dTrace
-SET USAGE=-x
-SET FILETYPE=ext
-REM ---------------------------------------------------------------------------------------------------------
-
-REM ---------------------------------------------------------------------------------------------------------
-SET LOCALDIR=\Testes\MPS\ICClogs
-REM ---------------------------------------------------------------------------------------------------------
+SET EXECID=%RANDOM%
+SET LOGFILE=@LOGFILE
 
 break > %LOGFILE%
-break > %LOGJARFILE%
+
+REM =====================================================================
+IF NOT EXIST ICCcheckExec.jar GOTO MISSF1
+REM =====================================================================
+
+SET CHECK=1
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=2
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=3
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=4
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=5
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET HOST=MLGMUC00SAP041
+SET CHECK=6
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=7
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=8
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=9
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=10
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET HOST=MLGMUC00APP744
+SET CHECK=11
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=12
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=13
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=14
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
+
+SET CHECK=15
+07_ICC_checks.cmd %LOGFILE% %HOST% %CHECK% %EXECID%
 
 
 
-REM *** Print LocalDateTime...
-REM =========================================================================================================
-FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
-ECHO ---------------------------------------------------------- 
-ECHO Start Processing...  %OSDATETIME%
-ECHO ---------------------------------------------------------- 
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-ECHO Start Processing...  %OSDATETIME% >> %LOGJARFILE%
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-REM =========================================================================================================
-
-
-
-REM *** Delete TMPFILE and try create errors of LOGs files, If some error, move this and restart...
-REM =========================================================================================================
-:TMP_RESTART
-MOVE /Y %TMPFILE% %TMPFILE%.%EXECID%.!COUNTRESET! >> %LOGJARFILE%
-
-IF %COUNTRESET% GTR 40 (
-	GOTO ICC_ERR
-)
-
-
-
-:TMP_USAGE
-
-REM *** Call External JAVA App to set Errors in checks Files... 
-REM *** If some error occur, restart from last check done...
-REM =========================================================================================================
-REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
-REM ---------------------------------------------------------------------------------------------------------
-FOR %%S IN (%HOST%) DO (
-
-REM ---------------------------------------------------------------------------------------------------------
-	FOR %%U IN (%USAGE%) DO (
-
-		ECHO ---------------------------------------------------------- 
-		ECHO check IF NOT EXIST = %TMPFILE%.%%S.%EXECID%.%FILETYPE%
-		ECHO ---------------------------------------------------------- 
-
-		IF NOT EXIST %TMPFILE%.%%S.%EXECID%.%FILETYPE% (
-
-			SET /A COUNTRESET+=1
-			ECHO ------------------%%S-------------------------- 
-			ECHO params = %%S %SERVICE% %PROCESS% %LOCALSR% %%U %MAXTIMEPROC% %MAXPERCERR% %EXECID%
-			ECHO ---------------------------------------------------------- 
-			java -jar %JARFILE% %%S %SERVICE% %PROCESS% %LOCALSR% %%U %MAXTIMEPROC% %MAXPERCERR% %EXECID% >> %LOGJARFILE%
-
-			TIMEOUT /T %TIMEWAIT% /NOBREAK
-
-			IF EXIST %TMPFILE% GOTO TMP_RESTART
-		)
-	)
-REM ---------------------------------------------------------------------------------------------------------
-
-REM *** LOOP - USAGE (-x, -v, -n, -o, -h)...
-REM ---------------------------------------------------------------------------------------------------------
-	IF "%USAGE%" EQU "-x" (
-		SET FILETYPE=ovw
-		SET USAGE=-v
-		GOTO TMP_USAGE
-	)
-	IF "%USAGE%" EQU "-v" (
-		SET FILETYPE=cln
-		SET USAGE=-n
-		GOTO TMP_USAGE
-	)
-	IF "%USAGE%" EQU "-n" (
-		SET FILETYPE=ops
-		SET USAGE=-o
-		GOTO TMP_USAGE
-	)
-	IF "%USAGE%" EQU "-o" (
-		SET FILETYPE=hst
-		SET USAGE=-h
-		GOTO TMP_USAGE
-	)
-	IF "%USAGE%" EQU "-h" (
-		SET FILETYPE=ext
-		SET USAGE=-x
-	)
-REM ---------------------------------------------------------------------------------------------------------
-
-REM *** LOOP - File Types ICCcheckExec (ext, ovw, cln, ops, hst)...
-REM ---------------------------------------------------------------------------------------------------------
-	FOR %%E IN (ext ovw cln ops hst) DO (	
-
-		SET /A COUNT+=1
-		ECHO ICC00!COUNT!
-		ECHO ----------------------CHECKS------------------------------ >> %LOGFILE%
-		ECHO ICC00!COUNT! >> %LOGFILE%
-		ECHO ----------------------ERRORS------------------------------ >> %LOGFILE%
-		SET OK=TRUE
-		SET LINES=0
-
-		FOR /F  %%A IN (%TMPFILE%.%%S.%EXECID%.%%E) DO (SET /A LINES+=1)
-
-		IF "!LINES!" EQU "0" (
-			ECHO OK
-		) ELSE (
-			ECHO ERROR
-			TYPE %TMPFILE%.%%S.%EXECID%.%%E >> %LOGFILE%
-			ECHO. >> %LOGFILE%
-		)
-	)
-REM ---------------------------------------------------------------------------------------------------------
-)
-
-REM *** LOOP - HOST (MLGMUC00SAP019, MLGMUC00SAP041)...
-REM ---------------------------------------------------------------------------------------------------------
-IF "%HOST%" EQU "MLGMUC00SAP019" (
-
-	SET HOST=MLGMUC00SAP041
-	SET USAGE=-x
-	SET FILETYPE=ext
-	GOTO TMP_RESTART
-)
-REM ---------------------------------------------------------------------------------------------------------
-
-REM GOTO ICC_END
-
-
-
-:ICC_ARCH
-REM *** Print Info...
-REM =========================================================================================================
-FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
-ECHO ---------------------------------------------------------- 
-ECHO ICC_ARCH - Archiving...  %OSDATETIME%
-ECHO ---------------------------------------------------------- 
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-ECHO ICC_ARCH - Archiving...  %OSDATETIME% >> %LOGJARFILE%
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-REM =========================================================================================================
-
-
-REM *** ZIP/Move/Copy Files to check the executation...
-REM =========================================================================================================
-COPY /Y %LOGFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
-
-IF EXIST "7za.exe" (
-
-	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP019.* >> %LOGJARFILE%
-	7za.exe a -tzip %ZIPFILE% *.MLGMUC00SAP041.* >> %LOGJARFILE%
-	7za.exe a -tzip %ZIPFILE% %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
-	7za.exe a -tzip %ZIPFILE% %LOGFILE%.%EXECID% >> %LOGJARFILE%
-
-	DEL *.MLGMUC00SAP019.* >> %LOGJARFILE%
-	DEL *.MLGMUC00SAP041.* >> %LOGJARFILE%
-	DEL %TMPFILE%.%EXECID%.* >> %LOGJARFILE%
-	DEL %LOGFILE%.%EXECID% >> %LOGJARFILE%
-	
-) ELSE (
-
-	MOVE /Y *.MLGMUC00SAP019.* .%LOCALDIR% >> %LOGJARFILE%
-	MOVE /Y *.MLGMUC00SAP041.* .%LOCALDIR% >> %LOGJARFILE%
-	MOVE /Y %TMPFILE%.%EXECID%.* .%LOCALDIR% >> %LOGJARFILE%
-	MOVE /Y %LOGFILE%.%EXECID% .%LOCALDIR% >> %LOGJARFILE%
-)
-
-IF EXIST "7za.exe" (
-
-	7za.exe a -tzip %ZIPFILE% %LOGJARFILE%
-	MOVE /Y %ZIPFILE% .%LOCALDIR%
-	DEL %LOGJARFILE%
-
-) ELSE (
-
-	MOVE /Y %LOGJARFILE% .%LOCALDIR%
-)
-GOTO ICC_END
-REM =========================================================================================================
-
-
-
-:ICC_ERR
-REM =========================================================================================================
-ECHO ---------------------------------------------------------- 
-ECHO Error Reset - Timeout ICC COUNTRESET = %COUNTRESET%
-ECHO ---------------------------------------------------------- 
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-ECHO Error Reset - Timeout ICC COUNTRESET = %COUNTRESET% >> %LOGJARFILE%
-ECHO ---------------------------------------------------------- >> %LOGJARFILE%
-REM =========================================================================================================
-
-
-
-:ICC_END
-REM *** Print EOF! ...
-REM =========================================================================================================
-FOR /f "tokens=2 delims==" %%G IN ('wmic os get localdatetime /value') DO SET OSDATETIME=%%G
-ECHO ---------------------------------------------------------- 
-ECHO EOF.  %OSDATETIME% 
-ECHO ---------------------------------------------------------- 
+:END
 exit
